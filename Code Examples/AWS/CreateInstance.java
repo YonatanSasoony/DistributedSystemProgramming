@@ -54,7 +54,7 @@ public class CreateInstance {
         Ec2Client ec2 = Ec2Client.create();
  
         RunInstancesRequest runRequest = RunInstancesRequest.builder()
-                .instanceType(InstanceType.T1_MICRO)
+                .instanceType(InstanceType.T2_MICRO)
                 .imageId(amiId)
                 .maxCount(1)
                 .minCount(1)
