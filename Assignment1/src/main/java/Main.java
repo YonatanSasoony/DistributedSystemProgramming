@@ -14,15 +14,19 @@ public class Main {
         try {
             JsonReader reader = new JsonReader(new FileReader("src/Input files/i1.txt"));
             HashMap<String, Object> map = gson.fromJson(reader, HashMap.class);
-            ArrayList<LinkedTreeMap<String, String>> reviews = (ArrayList)map.get("reviews");
+            ArrayList<LinkedTreeMap<String, Object>> reviews = (ArrayList)map.get("reviews");
             String title = (String)map.get("title");
 
-
-            System.out.println("HELLO");
+            List<Review> ReviewList = new LinkedList<>();
+            for(LinkedTreeMap<String, Object> r : reviews){
+                ReviewList.add(new Review((String) r.get("id"), (String)r.get("link"), (String)r.get("title"),
+                        (String)r.get("text"), (Double) r.get("rating"), (String)r.get("author"), (String)r.get("date")));
+            }
+            Book book = new Book(title, ReviewList);
+            //System.out.println(book);
 
         } catch (FileNotFoundException e) {
-            System.out.println("KAKA");
-
+            System.out.println("JSON parsing Failed");
         }
     }
 }
