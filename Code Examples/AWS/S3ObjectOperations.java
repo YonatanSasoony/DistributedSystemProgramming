@@ -44,7 +44,28 @@ import software.amazon.awssdk.core.sync.ResponseTransformer;
 public class S3ObjectOperations {
  
     private static S3Client s3;
- 
+/******************************************************
+    public static void uploadFileToS3Bucket(
+            AmazonS3 s3, String bucketName, String key, File file) {
+        try {
+            s3.putObject(new PutObjectRequest(bucketName, key, file));
+        } catch (AmazonClientException ex) {
+            System.err.println("Caught an exception while uploading file: " +
+                    key + " to S3 bucket: " + bucketName);
+            throw ex;
+        }
+        System.out.println("Uploaded file: " + key + " to S3 bucket: " + bucketName);
+    }
+
+    public static void uploadFileToS3Bucket(AmazonS3 s3, String bucketName, File file) {
+        uploadFileToS3Bucket(s3, bucketName, file.getName(), file);
+    }
+
+    public static void uploadFileToS3Bucket(
+            AmazonS3 s3, String bucketName, File file, String localAppId) {
+        uploadFileToS3Bucket(s3, bucketName, localAppId + "-" + file.getName(), file);
+    }
+*/
     public static void main(String[] args) throws IOException {
         Region region = Region.US_EAST_1;
         s3 = S3Client.builder().region(region).build();
@@ -56,8 +77,7 @@ public class S3ObjectOperations {
         createBucket(bucket, region);
  
         // Put Object
-        s3.putObject(PutObjectRequest.builder().bucket(bucket).key(key)
-                        .build(),
+        s3.putObject(PutObjectRequest.builder().bucket(bucket).key(key).build(),
                 RequestBody.fromByteBuffer(getRandomByteBuffer(10_000)));
  
  

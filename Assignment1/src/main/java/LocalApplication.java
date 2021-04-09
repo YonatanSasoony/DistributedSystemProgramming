@@ -1,8 +1,11 @@
 import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
+import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.services.ec2.Ec2Client;
 import software.amazon.awssdk.services.ec2.model.*;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.URI;
 import java.nio.file.Path;
 import java.util.*;
 import java.io.IOException;
@@ -18,7 +21,8 @@ import software.amazon.awssdk.core.sync.ResponseTransformer;
 import software.amazon.awssdk.services.ec2.model.Tag;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.*;
-
+import com.google.gson.*;
+import com.google.gson.internal.LinkedTreeMap;
 public class LocalApplication {
 
     public static void main(String[] args) {
@@ -51,7 +55,6 @@ public class LocalApplication {
 
         // snippet-start:[ec2.java2.create_instance.main]
         Ec2Client ec2 = Ec2Client.create();
-        ec2.describeInstances().reservations();
 
         boolean isManager = false;
         // get instances
@@ -141,21 +144,19 @@ public class LocalApplication {
         try {
             for (int i = 0; i<N; i++) {
                 String key = args[i];
-                PutObjectResponse uploadResponse =  s3.putObject(PutObjectRequest.builder().bucket(bucket).key(key).build(),
+                s3.putObject(PutObjectRequest.builder().bucket(bucket).key(key).build(),
                         RequestBody.fromFile(new File(key)));
+                //TODO: decide which message to send
                 String s3URL = "s3://"+bucket+"/"+key;
                 String objectURL = "https://"+bucket+".s3.amazonaws.com/"+key;
-
+                String body = bucket+":"+key;
                 SendMessageRequest send_msg_request = SendMessageRequest.builder()
                         .queueUrl(queueUrl)
-                        .messageBody(s3URL)
+                        .messageBody(body)
 //                        .delaySeconds(5) // TODO: check this line
                         .build();
                 sqs.sendMessage(send_msg_request);
 
-                // TODO: save the location of the file on S3
-//                ResponseInputStream obj = s3.getObject(GetObjectRequest.builder().bucket(bucket).key(key).build());
-//                System.out.println(obj.toString());
             }
         } catch (Exception e) {
             System.out.println(e);
@@ -167,14 +168,31 @@ public class LocalApplication {
                 .queueUrl(queueUrl)
                 .build();
         List<Message> messages = sqs.receiveMessage(receiveRequest).messages();
-
+        List<Book> books = new ArrayList<>();
+        System.out.println("Reading messages");
         for (Message m : messages) {
-            String url = m.body();
+            // TODO: parse message to Book instance
+            String body = m.body();
+            System.out.println(body);
+            String[] content = body.split(":");
+            String b = content[0];
+            String k = content[1];
+//            ResponseBytes<GetObjectResponse> response = s3.getObject(GetObjectRequest.builder().bucket(b).key(k).build(),
+//                    ResponseTransformer.toBytes());
+            ResponseInputStream<GetObjectResponse> response = s3.getObject(GetObjectRequest.builder().bucket(b).key(k).build());
 
 
+
+//            System.out.println(new String(response.asByteArray()));
+            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@22");
+
+
+            books.add(JSONBookParser.parse(response));
         }
-
-
-
+        for (Book book : books) {
+            System.out.println(book);
+            System.out.println("##############################################################################");
+        }
+        // TODO: stop manager? delete buckets?
     }
 }
