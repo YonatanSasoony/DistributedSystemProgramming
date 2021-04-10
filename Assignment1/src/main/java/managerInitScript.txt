@@ -1,0 +1,4 @@
+#cloud-boothook
+#!/bin/bash
+aws s3 cp s3://assignment1-pre-uploaded-jar/Assignment1.jar Assignment1.jar
+java -jar Assignment1.jar Manager
