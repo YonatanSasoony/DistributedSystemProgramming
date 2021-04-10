@@ -76,11 +76,11 @@ public class AWSHelper {
 
         RunInstancesResponse response = ec2.runInstances(runRequest);
         String instanceId = response.instances().get(0).instanceId();
-        createTagForInstace(instanceId, tag);
+        createTagForInstance(instanceId, tag);
 
     }
 
-    private static void createTagForInstace(String id, Tag tag) {
+    private static void createTagForInstance(String id, Tag tag) {
         CreateTagsRequest tagRequest = CreateTagsRequest.builder()
                 .resources(id)
                 .tags(tag)
