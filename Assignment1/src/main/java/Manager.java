@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 public class Manager {
 
     public static void main(String[] args) {
+        System.out.println("Hello Manager");
         final ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
 
         String requestQueueUrl = AWSHelper.queueUrl(Defs.MANAGER_REQUEST_QUEUE_NAME);

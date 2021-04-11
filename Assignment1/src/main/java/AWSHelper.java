@@ -27,14 +27,14 @@ public class AWSHelper {
     private static final String managerScript =
         "#cloud-boothook\n"+
         "#!/bin/bash\n"+
-        "aws s3 cp s3://assignment1-pre-uploaded-jar/Assignment1.jar Assignment1.jar\n"+
-        "java -jar Assignment1.jar Manager";
+        "aws s3 cp s3://assignment1-pre-uploaded-jar/Manager.jar Manager.jar\n"+
+        "java -jar Manager.jar Manager";
 
     private static final String workerScript =
             "#cloud-boothook\n"+
             "#!/bin/bash\n"+
-            "aws s3 cp s3://assignment1-pre-uploaded-jar/Assignment1.jar Assignment1.jar\n"+
-            "java -jar Assignment1.jar Worker";
+            "aws s3 cp s3://assignment1-pre-uploaded-jar/sarcasm.jar sarcasm.jar\n"+
+            "java -jar sarcasm.jar Worker";
 
     //EC2
     public static void runManager() {
@@ -43,7 +43,6 @@ public class AWSHelper {
         for (Reservation reservation : ec2.describeInstances().reservations()) {
             for (Instance instance : reservation.instances()) {
                 String id = instance.instanceId();
-                System.out.println(id);
                 List<Tag> tags = instance.tags();
                 for (Tag tag : tags) {
                     if (tag.equals(Defs.MANAGER_TAG) && instance.state().name() != InstanceStateName.TERMINATED) {
@@ -147,7 +146,7 @@ public class AWSHelper {
     }
 
     public static void deleteMessage() {
-
+        //TODO:
     }
 
     // S3
