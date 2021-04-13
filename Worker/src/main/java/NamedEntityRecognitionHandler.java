@@ -15,11 +15,16 @@ public class NamedEntityRecognitionHandler {
     private StanfordCoreNLP NERPipeline;
     public NamedEntityRecognitionHandler() {
         Properties props = new Properties();
-        props.put("annotators", "tokenize , ssplit, pos, lemma, ner");
+        props.put("annotators", "tokenize , ssplit, pos, lemma, ner"); //TODO: set
         NERPipeline = new StanfordCoreNLP(props);
     }
-    public List<String> findEntities(String review){
-        List<String> entities = new ArrayList<>();
+    public String findEntities(String review){
+        List<String> types = new ArrayList<>();
+        types.add("PERSON");
+        types.add("LOCATION");
+        types.add("ORGANIZATION");
+
+        String entities = "";
         // create an empty Annotation just with the given text
         Annotation document = new Annotation(review);
         // run all Annotators on this text
@@ -34,11 +39,17 @@ public class NamedEntityRecognitionHandler {
                 // this is the text of the token
                 String word = token.get(TextAnnotation.class);
                 // this is the NER label of the token
+                System.out.println("word in entity: "+word);
                 String ne = token.get(NamedEntityTagAnnotation.class);
+                System.out.println("ne in entity: "+ne);
+
 //                System.out.println("\t-" + word + ":" + ne);
-                entities.add(word + ":" + ne);
+                if (types.contains(ne)) {
+                    entities += word + ";" + ne + "@";
+                }
             }
         }
-        return entities;
+
+        return entities.length() == 0 ? "null" : entities.substring(0, entities.length() - 1); // remove the last char
     }
 }

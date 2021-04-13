@@ -64,6 +64,12 @@ public class AWSHelper {
         createEC2Instance(amiId, workerScript, Defs.WORKER_TAG);
     }
 
+    public static void createWorkerInstances(int n) {
+        for (int i = 0; i < n; i++) {
+            createWorkerInstance();
+        }
+    }
+
     private static void createEC2Instance(String ami, String script, Tag tag) {
         RunInstancesRequest runRequest = RunInstancesRequest.builder()
                 .instanceType(InstanceType.T2_MICRO)
@@ -92,6 +98,22 @@ public class AWSHelper {
         }
     }
 
+    public static int activeWorkers() {
+        int activeWorkers = 0;
+        for (Reservation reservation : ec2.describeInstances().reservations()) {
+            for (Instance instance : reservation.instances()) {
+                String id = instance.instanceId();
+                List<Tag> tags = instance.tags();
+                for (Tag tag : tags) {
+                    if (tag.equals(Defs.WORKER_TAG) && instance.state().name() == InstanceStateName.RUNNING) {
+                        activeWorkers++;
+                    }
+                }
+            }
+        }
+        return activeWorkers;
+    }
+
     // SQS
     public static void initQueues() {
         initQueue(Defs.MANAGER_REQUEST_QUEUE_NAME);
@@ -116,7 +138,7 @@ public class AWSHelper {
     }
     public static void sendMessages(String queueName, List<String> bodies) {
         for (String body : bodies) {
-            sendMessage(queueUrl(queueName), body);
+            sendMessage(queueName, body);
         }
     }
 
@@ -131,6 +153,7 @@ public class AWSHelper {
     public static List<Message> receiveMessages(String queueName) {
         ReceiveMessageRequest receiveRequest = ReceiveMessageRequest.builder()
                 .queueUrl(queueUrl(queueName))
+                .waitTimeSeconds(15)
                 .build();
         return sqs.receiveMessage(receiveRequest).messages();
     }
@@ -139,14 +162,25 @@ public class AWSHelper {
         ReceiveMessageRequest receiveRequest = ReceiveMessageRequest.builder()
                 .queueUrl(queueUrl(queueName))
                 .maxNumberOfMessages(1)
-                .visibilityTimeout(10)
+                .visibilityTimeout(60)
+                .waitTimeSeconds(15)
                 .build();
 
         return sqs.receiveMessage(receiveRequest).messages().get(0);
     }
 
-    public static void deleteMessage() {
-        //TODO:
+    public static void deleteMessages(String queueName, List<Message> messages) {
+        for (Message msg : messages) {
+            deleteMessage(queueName, msg);
+        }
+    }
+
+    public static void deleteMessage(String queueName, Message msg) {
+        DeleteMessageRequest deleteRequest = DeleteMessageRequest.builder()
+                .queueUrl(queueUrl(queueName))
+                .receiptHandle(msg.receiptHandle())
+                .build();
+        sqs.deleteMessage(deleteRequest);
     }
 
     // S3
@@ -158,9 +192,15 @@ public class AWSHelper {
                 .build());
         return bucket;
     }
-    public static void uploadToS3(String bucket, String key, String data) {
+
+    public static void uploadFileTOS3(String bucket, String key, String dataPath) {
         s3.putObject(PutObjectRequest.builder().bucket(bucket).key(key).build(),
-                RequestBody.fromFile(new File(data)));
+                RequestBody.fromFile(new File(dataPath)));
+    }
+
+    public static void uploadContentToS3(String bucket, String key, String content) {
+        s3.putObject(PutObjectRequest.builder().bucket(bucket).key(key).build(),
+                RequestBody.fromString(content));
     }
 
     public static InputStream downloadFromS3(String bucket, String key) {

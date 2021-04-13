@@ -11,6 +11,8 @@ import software.amazon.awssdk.services.sqs.model.*;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
@@ -125,12 +127,14 @@ public class AWSHelper {
                 .queueUrl(queueUrl(queueName))
                 .messageBody(body)
                 .build();
+        System.out.println("sending message: "+body);
         sqs.sendMessage(sendMessageRequest);
     }
 
     public static List<Message> receiveMessages(String queueName) {
         ReceiveMessageRequest receiveRequest = ReceiveMessageRequest.builder()
                 .queueUrl(queueUrl(queueName))
+                .waitTimeSeconds(15)
                 .build();
         return sqs.receiveMessage(receiveRequest).messages();
     }
@@ -139,14 +143,25 @@ public class AWSHelper {
         ReceiveMessageRequest receiveRequest = ReceiveMessageRequest.builder()
                 .queueUrl(queueUrl(queueName))
                 .maxNumberOfMessages(1)
-                .visibilityTimeout(10)
+                .visibilityTimeout(60)
+                .waitTimeSeconds(15)
                 .build();
-
-        return sqs.receiveMessage(receiveRequest).messages().get(0);
+        try {
+            return sqs.receiveMessage(receiveRequest).messages().isEmpty() ?
+                    null : sqs.receiveMessage(receiveRequest).messages().get(0);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("size of messages list: "+sqs.receiveMessage(receiveRequest).messages().size());
+            return null;
+        }
     }
 
-    public static void deleteMessage() {
-        //TODO:
+    public static void deleteMessage(String queueName, Message msg) {
+        DeleteMessageRequest deleteRequest = DeleteMessageRequest.builder()
+                .queueUrl(queueUrl(queueName))
+                .receiptHandle(msg.receiptHandle())
+                .build();
+        sqs.deleteMessage(deleteRequest);
     }
 
     // S3

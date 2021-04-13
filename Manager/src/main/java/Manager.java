@@ -8,17 +8,13 @@ import java.util.concurrent.TimeUnit;
 public class Manager {
 
     public static void main(String[] args) {
-        System.out.println("Hello Manager");
-        AWSHelper.createWorkerInstance(); // TODO: DELETE LINE
         final ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
-
-        String requestQueueUrl = AWSHelper.queueUrl(Defs.MANAGER_REQUEST_QUEUE_NAME);
 
         boolean isTerminated = false;
         while (!isTerminated) {
             // receive messages from the queue
-            List<Message> requestMessages = null;
-            while ((requestMessages = AWSHelper.receiveMessages(requestQueueUrl)) == null) {
+            List<Message> requestMessages = AWSHelper.receiveMessages(Defs.MANAGER_REQUEST_QUEUE_NAME);
+            if (requestMessages.isEmpty()) {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -26,25 +22,25 @@ public class Manager {
                 }
             }
 
-            for (Message m : requestMessages) {
+            for (Message msg : requestMessages) {
                 // msg = <localApplicationID>:<bucket>:<key>:<n>:<terminate> - what else?
-                //TODO: create a message class?
-                String[] content = m.body().split(":");
+                System.out.println("manager received message: "+msg.body());
+                String[] content = msg.body().split(":");
                 String localAppId = content[0];
                 String bucket = content[1];
                 String key = content[2];
-                Integer n = Integer.getInteger(content[3]);
-                Boolean terminate = Boolean.getBoolean(content[4]);
+                Integer n = Integer.parseInt(content[3]);
+                Boolean terminate = Boolean.parseBoolean(content[4]);
 
                 Book book = JSONBookParser.parse(AWSHelper.downloadFromS3(bucket, key));
+                System.out.println(book.getTitle());
                 int reviewsNum = book.getReviews().size();
-                int numOfWorkers = reviewsNum / n ; //TODO: +1?
-                int numOfWorkersToAdd = 1; // TODO: calculate
-
-                for (int i=0; i < numOfWorkersToAdd; i++) {
-                    AWSHelper.createWorkerInstance();
-                }
-                executor.execute(new ManagerTask(localAppId, book, bucket, key));
+                int requiredWorkers = (int)(Math.ceil(reviewsNum / n)); // m
+                int activeWorkers = AWSHelper.activeWorkers(); //TODO: synchronize?! // k
+                int numOfWorkersToAdd = requiredWorkers - activeWorkers;
+                AWSHelper.createWorkerInstances(numOfWorkersToAdd);
+                AWSHelper.deleteMessage(Defs.MANAGER_REQUEST_QUEUE_NAME, msg);
+                executor.execute(new ManagerTask(localAppId, book, bucket));
 
                 if (terminate) {
                     executor.shutdown();
@@ -53,7 +49,7 @@ public class Manager {
             }
         }
 
-        // wait for thread to finish
+        // wait for threads to finish
         while (true) {
             try {
                 if (executor.awaitTermination(2, TimeUnit.SECONDS)) break;

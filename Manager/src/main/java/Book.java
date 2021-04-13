@@ -17,6 +17,24 @@ public class Book {
         return reviews;
     }
 
+    public Double getRatingFromReviewId(String id) {
+        for (Review review : this.reviews) {
+            if (review.getId().equals(id)) {
+                return review.getRating();
+            }
+        }
+        return -1.0;
+    }
+
+    public String getLinkFromReviewId(String id) {
+        for (Review review : this.reviews) {
+            if (review.getId().equals(id)) {
+                return review.getLink();
+            }
+        }
+        return "";
+    }
+
     @Override
     public String toString() {
         return "Book{\n" +
