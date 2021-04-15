@@ -13,8 +13,8 @@ public class Worker {
             Message message = AWSHelper.receiveSingleMessage(Defs.WORKER_REQUEST_QUEUE_NAME);
             System.out.println("worker got message");
             String response = analyzeMessage(message);
-            AWSHelper.deleteMessage(Defs.WORKER_REQUEST_QUEUE_NAME, message);
             AWSHelper.sendMessage(Defs.WORKER_RESPONSE_QUEUE_NAME, response);
+            AWSHelper.deleteMessage(Defs.WORKER_REQUEST_QUEUE_NAME, message);
             System.out.println("worker sent response: " + response);
         }
     }
@@ -22,12 +22,13 @@ public class Worker {
     private static String analyzeMessage(Message message){
         String responseMessage = null;
         try {
-            // msg = <LocalAppID><operation><reviewID><review>
+            // request = <LocalAppID><inputNum><operation><reviewID><review>
             String[] parsedMessage = message.body().split(in);
             String localAppID = parsedMessage[0];
-            String operation = parsedMessage[1];
-            String reviewID = parsedMessage[2];
-            String review = parsedMessage[3];
+            String inputNum = parsedMessage[1];
+            String operation = parsedMessage[2];
+            String reviewID = parsedMessage[3];
+            String review = parsedMessage[4];
 
             String output = "";
             if (operation.equals(Defs.SENTIMENT_ANALYSIS_OPERATION)) {
@@ -36,9 +37,9 @@ public class Worker {
             }
             if (operation.equals(Defs.ENTITY_RECOGNITION_OPERATION)) {
 //                NamedEntityRecognitionHandler namedEntityRecognitionHandler = new NamedEntityRecognitionHandler();
-                output = "OBAMA;PERSON";//namedEntityRecognitionHandler.findEntities(review); //TODO:
+                output = "OBAMA:PERSON";//namedEntityRecognitionHandler.findEntities(review); //TODO:
             }
-            responseMessage = localAppID + in + operation + in + reviewID + in + output;
+            responseMessage = localAppID + in + inputNum + in + operation + in + reviewID + in + output;
 
         }catch (Exception e){
             e.printStackTrace();

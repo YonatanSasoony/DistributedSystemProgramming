@@ -11,6 +11,7 @@ import software.amazon.awssdk.services.sqs.model.*;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
@@ -112,6 +113,25 @@ public class AWSHelper {
             }
         }
         return activeWorkers;
+    }
+
+    public static void shutdownWorkers() {
+        List<String> ids = new ArrayList<>();
+        for (Reservation reservation : ec2.describeInstances().reservations()) {
+            for (Instance instance : reservation.instances()) {
+                String id = instance.instanceId();
+                List<Tag> tags = instance.tags();
+                for (Tag tag : tags) {
+                    if (tag.equals(Defs.WORKER_TAG) && instance.state().name() == InstanceStateName.RUNNING) {
+                        ids.add(id);
+                    }
+                }
+            }
+        }
+        TerminateInstancesRequest request = TerminateInstancesRequest.builder()
+                .instanceIds(ids)
+                .build();
+        ec2.terminateInstances(request);
     }
 
     // SQS
@@ -229,13 +249,5 @@ public class AWSHelper {
         return s3.getObject(GetObjectRequest.builder().bucket(bucket).key(key).build(),
                 ResponseTransformer.toBytes()).asInputStream();
     }
-
-
-
-
-//}catch (Exception e) {
-//        System.out.println(e);
-//        System.out.println("Upload to S3 failed.");
-//        }
 
 }

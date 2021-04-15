@@ -14,23 +14,16 @@ public class Manager {
         while (!isTerminated) {
             // receive messages from the queue
             List<Message> requestMessages = AWSHelper.receiveMessages(Defs.MANAGER_REQUEST_QUEUE_NAME);
-            if (requestMessages.isEmpty()) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
             for (Message msg : requestMessages) {
-                // msg = <localApplicationID><bucket><key><n><terminate> - what else?
+                // request - <localApplicationID><inputNum><bucket><key><n><terminate>
                 System.out.println("manager received message: "+msg.body());
                 String[] content = msg.body().split(Defs.internalDelimiter);
                 String localAppId = content[0];
-                String bucket = content[1];
-                String key = content[2];
-                Integer n = Integer.parseInt(content[3]);
-                Boolean terminate = Boolean.parseBoolean(content[4]);
+                String inputNum = content[1];
+                String bucket = content[2];
+                String key = content[3];
+                Integer n = Integer.parseInt(content[5]);
+                Boolean terminate = Boolean.parseBoolean(content[6]);
 
                 Product product = JSONProductParser.parse(AWSHelper.downloadFromS3(bucket, key));
                 System.out.println(product.description());
@@ -39,9 +32,8 @@ public class Manager {
                 int activeWorkers = AWSHelper.activeWorkers(); //TODO: synchronize?! // k
                 int numOfWorkersToAdd = requiredWorkers - activeWorkers;
                 AWSHelper.createWorkerInstances(numOfWorkersToAdd);
+                executor.execute(new ManagerTask(localAppId, inputNum, product, bucket));
                 AWSHelper.deleteMessage(Defs.MANAGER_REQUEST_QUEUE_NAME, msg);
-                executor.execute(new ManagerTask(localAppId, product, bucket));
-
                 if (terminate) {
                     executor.shutdown();
                     isTerminated = true;
@@ -57,5 +49,6 @@ public class Manager {
                 e.printStackTrace();
             }
         }
+        AWSHelper.shutdownWorkers();
     }
 }

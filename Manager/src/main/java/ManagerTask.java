@@ -5,13 +5,15 @@ import java.util.*;
 public class ManagerTask implements Runnable {
 
     private final String localAppId;
+    private final String inputNum;
     private final Product product;
     private final String bucket;
     private static final String in = Defs.internalDelimiter;
 
-    public ManagerTask(String localAppId, Product book, String bucket) {
+    public ManagerTask(String localAppId, String inputNum, Product product, String bucket) {
         this.localAppId = localAppId;
-        this.product = book;
+        this.inputNum = inputNum;
+        this.product = product;
         this.bucket = bucket;
     }
 
@@ -19,10 +21,10 @@ public class ManagerTask implements Runnable {
         System.out.println("manager task init");
         int totalTasks = 0;
         for (Review review : this.product.reviews()) {
-            // task = <localAppId><operation><reviewId><review>
+            // request = <localAppId><inputNum><operation><reviewId><review>
             List<String> tasks = new ArrayList<>();
-            tasks.add(this.localAppId + in + Defs.SENTIMENT_ANALYSIS_OPERATION + in + review.id() + in + review.text());
-            tasks.add(this.localAppId + in + Defs.ENTITY_RECOGNITION_OPERATION + in + review.id() + in + review.text());
+            tasks.add(this.localAppId + in + this.inputNum + in + Defs.SENTIMENT_ANALYSIS_OPERATION + in + review.id() + in + review.text());
+            tasks.add(this.localAppId + in + this.inputNum + in + Defs.ENTITY_RECOGNITION_OPERATION + in + review.id() + in + review.text());
             AWSHelper.sendMessages(Defs.WORKER_REQUEST_QUEUE_NAME, tasks);
             totalTasks += 2;
         }
@@ -34,28 +36,33 @@ public class ManagerTask implements Runnable {
             // receive messages from the queue
             List<Message> responseMessages = AWSHelper.receiveMessages(Defs.WORKER_RESPONSE_QUEUE_NAME);
             for (Message msg : responseMessages) {
-                // msg = <LocalAppID><operation><reviewID><output>
+                // response = <LocalAppID><inputNum><operation><reviewID><output>
                 String[] parsedMessage = msg.body().split(in);
                 String localAppId = parsedMessage[0];
-                String operation = parsedMessage[1];
-                String reviewId = parsedMessage[2];
-                String output = parsedMessage[3];
+                String inputNum = parsedMessage[1];
+                String operation = parsedMessage[2];
+                String reviewId = parsedMessage[3];
+                String output = parsedMessage[4];
 
-                if (this.localAppId.equals(localAppId)){
+                if (this.localAppId.equals(localAppId) && this.inputNum.equals(inputNum)){ // relevant response
                     // need - id, rating, link, 2 outputs for each review
-                    AWSHelper.deleteMessage(Defs.WORKER_RESPONSE_QUEUE_NAME, msg);
                     String rating = this.product.ratingFromReviewId(reviewId).toString();
                     String link = this.product.linkFromReviewId(reviewId);
+                    // summaryMsg - (<reviewId><rating><link><operation><output>ex)*<description>
                     summaryMsg += reviewId + in + rating + in + link + in + operation + in + output + Defs.externalDelimiter;
                     tasksCompleted++;
+                    AWSHelper.deleteMessage(Defs.WORKER_RESPONSE_QUEUE_NAME, msg);
                     System.out.println("tasks completed: "+tasksCompleted);
                 }
             }
         }
+
+        summaryMsg += product.description();
         System.out.println("manager task creating summary");
         String key = "Summary" + System.currentTimeMillis();
         AWSHelper.uploadContentToS3(this.bucket, key, summaryMsg);
-        String response = this.localAppId + in + this.bucket + in + key;
+        // response - <localApplicationID><inputNum><bucket><key>
+        String response = this.localAppId + in + inputNum+ in + this.bucket + in + key;
         AWSHelper.sendMessage(Defs.MANAGER_RESPONSE_QUEUE_NAME, response);
         System.out.println("manager task uploaded & sent summary");
 
