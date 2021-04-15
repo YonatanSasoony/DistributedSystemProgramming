@@ -20,7 +20,6 @@ public class Defs {
     static final String ENTITY_RECOGNITION_OPERATION = "EntityRecognition";
     static final String SENTIMENT_ANALYSIS_OPERATION = "SentimentAnalysis";
 
-    static final String internalDelimiter = "::";
-    static final String externalDelimiter = "<:>";
+
 
 }

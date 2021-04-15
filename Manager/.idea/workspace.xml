@@ -9,44 +9,60 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3e409ce9-a4f8-4901-b4d0-345d5ea0110a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../LocalApplication/src/main/java/manager.sh" afterDir="false" />
+    <list default="true" id="3e409ce9-a4f8-4901-b4d0-345d5ea0110a" name="Default Changelist" comment="Assignment1: run locally">
+      <change afterPath="$PROJECT_DIR$/../Common/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Common/.idea/artifacts/Common_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Common/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Common/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Common/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Common/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Common/Common.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Common/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Common/src/main/java/AWSHelper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Common/src/main/java/Defs.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Common/src/main/resources/Common.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Common/src/main/resources/META-INF/MANIFEST.MF" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Common/target/classes/AWSHelper.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Common/target/classes/Defs.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Common/target/classes/META-INF/MANIFEST.MF" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../LocalApplication/src/main/resources/LocalApplication.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../LocalApplication/src/main/resources/manager.sh" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../LocalApplication/src/main/resources/‏‏‫מסמך טקסט ‫חדש.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../LocalApplication/target/classes/LocalApplication.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../LocalApplication/target/classes/manager.sh" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../LocalApplication/target/classes/‏‏‫מסמך טקסט ‫חדש.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../LocalApplication/target/maven-archiver/pom.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../LocalApplication/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../LocalApplication/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../LocalApplication/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Product.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/main/resources/Manager.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Worker/.idea/artifacts/Worker_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Worker/src/main/resources/META-INF/MANIFEST.MF" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../Worker/src/main/resources/Worker.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Worker/target/classes/META-INF/MANIFEST.MF" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Worker/target/classes/Worker.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../LocalApplication/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../LocalApplication/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../LocalApplication/src/main/java/AWSHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/src/main/java/AWSHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../LocalApplication/src/main/java/Defs.java" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/src/main/java/Defs.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../LocalApplication/src/main/java/LocalApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/src/main/java/LocalApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../LocalApplication/src/main/java/manager.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../LocalApplication/src/main/resources/manager.sh" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../LocalApplication/target/classes/AWSHelper.class" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/target/classes/AWSHelper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../LocalApplication/target/classes/Defs.class" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/target/classes/Defs.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../LocalApplication/target/classes/LocalApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/target/classes/LocalApplication.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../LocalApplication/target/classes/manager.sh" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/AWSHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/AWSHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Book.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Book.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Book.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Defs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Defs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/JSONBookParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/JSONProductParser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Manager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Manager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ManagerTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ManagerTask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Review.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Review.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/AWSHelper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/AWSHelper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Book.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Book.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Book.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Defs.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Defs.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/JSONBookParser.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/Manager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Manager.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ManagerTask.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ManagerTask.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Review.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Review.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Worker/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Worker/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Worker/src/main/java/AWSHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/src/main/java/AWSHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Worker/src/main/java/NamedEntityRecognitionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/src/main/java/NamedEntityRecognitionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Worker/src/main/java/Defs.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/src/main/java/Defs.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Worker/src/main/java/Worker.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/src/main/java/Worker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Worker/target/classes/AWSHelper.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/target/classes/AWSHelper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Worker/target/classes/Defs.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/target/classes/Defs.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Worker/target/classes/Worker.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/target/classes/Worker.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,14 +87,14 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/resources" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../LocalApplication" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="project.structure.last.edited" value="Artifacts" />
-    <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -93,13 +109,15 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
           <option name="containerStateName" value="" />
         </value>
       </option>
-      <option name="TEST_OBJECT" value="class" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <properties />
+      <listeners />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -118,8 +136,16 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1618148403405</updated>
-      <workItem from="1618148405773" duration="20261000" />
+      <workItem from="1618148405773" duration="21628000" />
+      <workItem from="1618471894687" duration="8464000" />
     </task>
+    <task id="LOCAL‎00001" summary="Assignment1: run locally">
+      <created>1618341049064</created>
+      <option name="number" value="LOCAL‎00001" />
+      <option name="presentableId" value="LOCAL‎00001" />
+      <updated>1618341049064</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -135,8 +161,11 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="Assignment1: run locally" />
+    <option name="LAST_COMMIT_MESSAGE" value="Assignment1: run locally" />
   </component>
 </project>

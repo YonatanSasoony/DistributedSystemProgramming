@@ -153,9 +153,20 @@ public class AWSHelper {
     public static List<Message> receiveMessages(String queueName) {
         ReceiveMessageRequest receiveRequest = ReceiveMessageRequest.builder()
                 .queueUrl(queueUrl(queueName))
-                .waitTimeSeconds(15)
+                .waitTimeSeconds(5) // 0 is short polling, 1-20 is long polling
                 .build();
-        return sqs.receiveMessage(receiveRequest).messages();
+        while (true) {
+            List<Message> messages = sqs.receiveMessage(receiveRequest).messages();
+            try {
+                if (!messages.isEmpty()) {
+                    return messages;
+                } else {
+                    Thread.sleep(1000);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static Message receiveSingleMessage(String queueName) {
@@ -163,10 +174,21 @@ public class AWSHelper {
                 .queueUrl(queueUrl(queueName))
                 .maxNumberOfMessages(1)
                 .visibilityTimeout(60)
-                .waitTimeSeconds(15)
+                .waitTimeSeconds(5) // 0 is short polling, 1-20 is long polling
                 .build();
 
-        return sqs.receiveMessage(receiveRequest).messages().get(0);
+        while (true) {
+            List<Message> messages = sqs.receiveMessage(receiveRequest).messages();
+            try {
+                if (!messages.isEmpty()) {
+                    return messages.get(0);
+                } else {
+                    Thread.sleep(1000);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void deleteMessages(String queueName, List<Message> messages) {

@@ -23,24 +23,24 @@ public class Manager {
             }
 
             for (Message msg : requestMessages) {
-                // msg = <localApplicationID>:<bucket>:<key>:<n>:<terminate> - what else?
+                // msg = <localApplicationID><bucket><key><n><terminate> - what else?
                 System.out.println("manager received message: "+msg.body());
-                String[] content = msg.body().split(":");
+                String[] content = msg.body().split(Defs.internalDelimiter);
                 String localAppId = content[0];
                 String bucket = content[1];
                 String key = content[2];
                 Integer n = Integer.parseInt(content[3]);
                 Boolean terminate = Boolean.parseBoolean(content[4]);
 
-                Book book = JSONBookParser.parse(AWSHelper.downloadFromS3(bucket, key));
-                System.out.println(book.getTitle());
-                int reviewsNum = book.getReviews().size();
+                Product product = JSONProductParser.parse(AWSHelper.downloadFromS3(bucket, key));
+                System.out.println(product.description());
+                int reviewsNum = product.reviews().size();
                 int requiredWorkers = (int)(Math.ceil(reviewsNum / n)); // m
                 int activeWorkers = AWSHelper.activeWorkers(); //TODO: synchronize?! // k
                 int numOfWorkersToAdd = requiredWorkers - activeWorkers;
                 AWSHelper.createWorkerInstances(numOfWorkersToAdd);
                 AWSHelper.deleteMessage(Defs.MANAGER_REQUEST_QUEUE_NAME, msg);
-                executor.execute(new ManagerTask(localAppId, book, bucket));
+                executor.execute(new ManagerTask(localAppId, product, bucket));
 
                 if (terminate) {
                     executor.shutdown();

@@ -9,7 +9,8 @@ public class LocalApplication {
 
     public static void main(String[] args) {
         final String localApplicationID = UUID.randomUUID().toString();
-
+        final String in = Defs.internalDelimiter;
+        final String ex = Defs.externalDelimiter;
         //check if manager is active on EC2 cloud, if not- start the manager node.
         AWSHelper.runManager();
         AWSHelper.initQueues();
@@ -24,7 +25,7 @@ public class LocalApplication {
         for (int i = 0; i<N; i++) {
             String key = args[i];
             AWSHelper.uploadFileTOS3(bucket, key, key);
-            String body = localApplicationID + ":" + bucket + ":" + key + ":" + n + ":" + terminate; //TODO: send relevant output path
+            String body = localApplicationID + in + bucket + in + key + in + n + in + terminate; //TODO: send relevant output path
             AWSHelper.sendMessage(Defs.MANAGER_REQUEST_QUEUE_NAME, body);
             System.out.println("local uploaded & sent file "+key);
         }
@@ -36,17 +37,9 @@ public class LocalApplication {
             // TODO: CHECK BUSY WAIT METHOD
             // receive messages from the queue
             List<Message> responseMessages = AWSHelper.receiveMessages(Defs.MANAGER_RESPONSE_QUEUE_NAME);
-            if (responseMessages.isEmpty()) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
             for (Message msg : responseMessages) {
-                // msg = <localApplicationID>:<bucket>:<key>
-                String[] content = msg.body().split(":");
+                // msg = <localApplicationID><bucket><key>
+                String[] content = msg.body().split(in);
                 String receivedID = content[0];
                 String receivedBucket = content[1];
                 String receivedKey = content[2];
@@ -63,11 +56,11 @@ public class LocalApplication {
 
 
         System.out.println("local creating html");
-        //summaryMsg - (<reviewId>:<rating>:<link>:<operation>:<output><\n>)*;
+        //summaryMsg - (<reviewId><rating><link><operation><output>)*; //TODO: get book title?
         Map<String, String[]> reviewsOutputMap = new HashMap<>();
-        String[] workersOutputs = summaryMsg.split("\n");
+        String[] workersOutputs = summaryMsg.split(ex);
         for (int i = 0; i< workersOutputs.length; i++) {
-            String[] outputContent = workersOutputs[i].split(":");
+            String[] outputContent = workersOutputs[i].split(in);
             String reviewId = outputContent[0];
             String rating = outputContent[1];
             String link = outputContent[2];
@@ -85,10 +78,11 @@ public class LocalApplication {
                 outputs[3] = output;
             }
         }
-        String outputFilePath = "o1.txt";
+
+        String outputFilePath = args[1];
         String htmlString = createHTMLString(reviewsOutputMap);
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath + ".html"));
             writer.write(htmlString);
             writer.close();
         } catch (IOException e) {

@@ -4,13 +4,13 @@ import com.google.gson.stream.JsonReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class JSONBookParser {
+public class JSONProductParser {
 
-    public static Book parse(InputStream stream) {
+    public static Product parse(InputStream stream) {
         Gson gson = new Gson();
         try {
             JsonReader reader = new JsonReader(new InputStreamReader(stream));
-            return gson.fromJson(reader, Book.class);
+            return gson.fromJson(reader, Product.class);
         } catch (Exception e) {
             System.out.println("failed to parse json: "+e);
             return null;

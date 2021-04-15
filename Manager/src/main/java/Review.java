@@ -17,44 +17,44 @@ public class Review {
         this.date = date;
     }
 
-    public String getId() {
+    public String id() {
         return id;
     }
 
-    public String getLink() {
+    public String link() {
         return link;
     }
 
-    public String getTitle() {
+    public String title() {
         return title;
     }
 
-    public String getText() {
+    public String text() {
         return text;
     }
 
-    public Double getRating() {
+    public Double rating() {
         return rating;
     }
 
-    public String getAuthor() {
+    public String author() {
         return author;
     }
 
-    public String getDate() {
+    public String date() {
         return date;
     }
 
     @Override
     public String toString() {
         return "Review{\n" +
-                "id='" + id + '\'' + '\n' +
-                ", link='" + link + '\'' + '\n' +
-                ", title='" + title + '\'' + '\n' +
-                ", text='" + text + '\'' + '\n' +
-                ", rating=" + rating + '\n' +
-                ", author='" + author + '\'' + '\n' +
-                ", date='" + date + '\'' + '\n' +
+                "id: " + id + '\n' +
+                "link: " + link + '\n' +
+                "title: " + title + '\n' +
+                "text: " + text + '\n' +
+                "rating: " + rating + '\n' +
+                "author: " + author + '\n' +
+                "date: " + date + '\n' +
                 '}' + '\n';
     }
 }
