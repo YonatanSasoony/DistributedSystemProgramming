@@ -14,6 +14,7 @@ public class Manager {
         while (!isTerminated) {
             // receive messages from the queue
             List<Message> requestMessages = AWSHelper.receiveMessages(Defs.MANAGER_REQUEST_QUEUE_NAME);
+            System.out.println("request messages size: "+requestMessages.size());
             for (Message msg : requestMessages) {
                 // request - <localApplicationID><inputNum><bucket><key><n><terminate>
                 System.out.println("manager received message: "+msg.body());
@@ -22,16 +23,16 @@ public class Manager {
                 String inputNum = content[1];
                 String bucket = content[2];
                 String key = content[3];
-                Integer n = Integer.parseInt(content[5]);
-                Boolean terminate = Boolean.parseBoolean(content[6]);
+                Integer n = Integer.parseInt(content[4]);
+                Boolean terminate = Boolean.parseBoolean(content[5]);
 
                 Product product = JSONProductParser.parse(AWSHelper.downloadFromS3(bucket, key));
-                System.out.println(product.description());
+                System.out.println(product.title());
                 int reviewsNum = product.reviews().size();
                 int requiredWorkers = (int)(Math.ceil(reviewsNum / n)); // m
-                int activeWorkers = AWSHelper.activeWorkers(); //TODO: synchronize?! // k
+                int activeWorkers = AWSHelper.activeWorkers();
                 int numOfWorkersToAdd = requiredWorkers - activeWorkers;
-                AWSHelper.createWorkerInstances(numOfWorkersToAdd);
+//                AWSHelper.createWorkerInstances(numOfWorkersToAdd); //TODO:
                 executor.execute(new ManagerTask(localAppId, inputNum, product, bucket));
                 AWSHelper.deleteMessage(Defs.MANAGER_REQUEST_QUEUE_NAME, msg);
                 if (terminate) {

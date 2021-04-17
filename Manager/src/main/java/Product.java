@@ -1,16 +1,16 @@
 import java.util.List;
 
 public class Product {
-    private String description;
+    private String title;
     private List<Review> reviews;
 
-    public Product(String description, List<Review> reviews) {
-        this.description = description;
+    public Product(String title, List<Review> reviews) {
+        this.title = title;
         this.reviews = reviews;
     }
 
-    public String description() {
-        return description;
+    public String title() {
+        return title;
     }
 
     public List<Review> reviews() {
@@ -38,7 +38,7 @@ public class Product {
     @Override
     public String toString() {
         return "Product {\n" +
-                "description: " + description + '\n' +
+                "description: " + title + '\n' +
                 "reviews:\n" +
                 reviews +
                 '}';

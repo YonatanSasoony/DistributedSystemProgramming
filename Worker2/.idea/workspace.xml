@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="Worker2:jar" />
+    </artifacts-to-build>
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="59847fb2-fbc5-423c-8b56-aff921aa9b2c" name="Default Changelist" comment="Assignment1: support multiple inputs from local">
+      <change afterPath="$PROJECT_DIR$/../Common/src/main/resources/Common.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../LocalApplication/src/main/resources/LocalApplication.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../LocalApplication/src/main/resources/o1.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../LocalApplication/src/main/resources/o2.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../LocalApplication/src/main/resources/o3.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../LocalApplication/src/main/resources/o4.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../LocalApplication/src/main/resources/o5.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../LocalApplication/target/classes/o2.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../LocalApplication/target/classes/o3.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../LocalApplication/target/classes/o4.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../LocalApplication/target/classes/o5.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Manager/src/main/resources/Manager.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Worker/target/Worker-1.0.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Worker/target/maven-archiver/pom.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Worker/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Worker/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Worker/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/Worker.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/Worker2.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/AWSHelper.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/Defs.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/NamedEntityRecognitionHandler.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/SentimentAnalysisHandler.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/Worker.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/Worker.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../LocalApplication/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../LocalApplication/src/main/java/AWSHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/src/main/java/AWSHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../LocalApplication/target/classes/AWSHelper.class" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/target/classes/AWSHelper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../LocalApplication/target/classes/LocalApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/target/classes/LocalApplication.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../LocalApplication/target/classes/o1.html" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/target/classes/o1.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Manager/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Worker/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Worker/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Worker/src/main/java/AWSHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/src/main/java/AWSHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Worker/src/main/java/Worker.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/src/main/java/Worker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Worker/src/main/resources/Worker.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/src/main/resources/Worker.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Worker/target/classes/AWSHelper.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/target/classes/AWSHelper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Worker/target/classes/Defs.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/target/classes/Defs.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Worker/target/classes/NamedEntityRecognitionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/target/classes/NamedEntityRecognitionHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Worker/target/classes/SentimentAnalysisHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/target/classes/SentimentAnalysisHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Worker/target/classes/Worker.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/target/classes/Worker.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/Worker_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/Worker2_jar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/AWSHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/AWSHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/NamedEntityRecognitionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/NamedEntityRecognitionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Worker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Worker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pom.xml" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1r1fIDKVlQ7B7vvDJmygty6nopn" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/resources" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\yc132\OneDrive\שולחן העבודה\AWS\DistributedSystemProgramming\Worker2\src\main\java" />
+      <recent name="C:\Users\yc132\OneDrive\שולחן העבודה\AWS\DistributedSystemProgramming\Worker\src\main\java" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.Worker">
+    <configuration name="Test3" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Test3" />
+      <module name="Worker" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Worker" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Worker" />
+      <module name="Worker" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Worker" />
+        <item itemvalue="Application.Test3" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="59847fb2-fbc5-423c-8b56-aff921aa9b2c" name="Default Changelist" comment="" />
+      <created>1618148438108</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1618148438108</updated>
+      <workItem from="1618148440784" duration="12761000" />
+      <workItem from="1618471886581" duration="7613000" />
+      <workItem from="1618646088923" duration="414000" />
+    </task>
+    <task id="LOCAL‎00001" summary="Assignment1: support multiple inputs from local">
+      <created>1618507098624</created>
+      <option name="number" value="LOCAL‎00001" />
+      <option name="presentableId" value="LOCAL‎00001" />
+      <updated>1618507098624</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Assignment1: support multiple inputs from local" />
+    <option name="LAST_COMMIT_MESSAGE" value="Assignment1: support multiple inputs from local" />
+  </component>
+</project>

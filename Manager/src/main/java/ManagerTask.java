@@ -57,7 +57,7 @@ public class ManagerTask implements Runnable {
             }
         }
 
-        summaryMsg += product.description();
+        summaryMsg += product.title();
         System.out.println("manager task creating summary");
         String key = "Summary" + System.currentTimeMillis();
         AWSHelper.uploadContentToS3(this.bucket, key, summaryMsg);

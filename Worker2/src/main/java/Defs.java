@@ -3,7 +3,6 @@ import software.amazon.awssdk.services.ec2.model.Tag;
 
 public class Defs {
     static final Region REGION = Region.US_EAST_1;
-    static final Region GLOBAL_REGION = Region.AWS_GLOBAL;
     static final Tag MANAGER_TAG = Tag.builder()
             .key("Type")
             .value("Manager")

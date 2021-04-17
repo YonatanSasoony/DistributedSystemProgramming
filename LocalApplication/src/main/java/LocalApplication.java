@@ -17,29 +17,38 @@ public class LocalApplication {
         final String ex = Defs.externalDelimiter;
         //check if manager is active on EC2 cloud, if not- start the manager node.
         AWSHelper.runManager();
+        bye(); //TODO delete
         AWSHelper.initQueues();
 
         // S3 folder for uploading input files
         String bucket = AWSHelper.createBucket(localApplicationID);
-
+        List<String> keys = new ArrayList<>();
         // based on legal input
         int N = (args.length - 1) / 2;
         String n = args[2 * N];
         boolean terminate = args.length % 2 == 0;
-
+        boolean localTerminate = false;
         for (int i = 0; i < N; i++) {
             String key = args[i];
+            keys.add(key);
             AWSHelper.uploadFileTOS3(bucket, key, key);
-            // request - <localApplicationID><inputNum><bucket><key><n><terminate>
-            String request = localApplicationID + in + i + in + bucket + in + key + in + n + in + terminate; //TODO: send relevant output path
-            AWSHelper.sendMessage(Defs.MANAGER_REQUEST_QUEUE_NAME, request);
+            // request - <localApplicationID><inputNum><bucket><key><n><localTerminate>
+            localTerminate = terminate && i == N-1;
+            String request = localApplicationID + in + i + in + bucket + in + key + in + n + in + localTerminate;
+            if (localTerminate) {
+                AWSHelper.sendMessageWithDelay(Defs.MANAGER_REQUEST_QUEUE_NAME, request, 5);
+            } else {
+                AWSHelper.sendMessage(Defs.MANAGER_REQUEST_QUEUE_NAME, request);
+            }
+
             System.out.println("local uploaded & sent file " + key);
         }
 
 
         for (int i = 0; i < N; i++) {
-            String summaryMsg = null;
-            while (summaryMsg == null) {
+            boolean relevantResponse = false;
+            System.out.println("response waiting: "+i);
+            while (!relevantResponse) {
                 // receive messages from the queue
                 List<Message> responseMessages = AWSHelper.receiveMessages(Defs.MANAGER_RESPONSE_QUEUE_NAME);
                 for (Message msg : responseMessages) {
@@ -47,25 +56,38 @@ public class LocalApplication {
                     String[] content = msg.body().split(in);
                     String receivedID = content[0];
                     Integer inputNum = Integer.parseInt(content[1]);
-                    String receivedBucket = content[2];
+                    String receivedBucket = content[2]; //TODO: delete?
                     String receivedKey = content[3];
                     if (localApplicationID.equals(receivedID)) {
+                        keys.add(receivedKey);
                         executor.execute(new LocalApplicationTask(args[N + inputNum], receivedBucket, receivedKey));
                         System.out.println("local received response from manager " + msg.body());
                         AWSHelper.deleteMessage(Defs.MANAGER_RESPONSE_QUEUE_NAME, msg);
+                        relevantResponse = true;
                         break;
                     }
                 }
             }
         }
+        System.out.printf("wait for other threads to finish");
         executor.shutdown();
         // wait for threads to finish
         while (true) {
             try {
-                if (executor.awaitTermination(2, TimeUnit.SECONDS)) break;
+                if (executor.awaitTermination(2, TimeUnit.SECONDS)) {
+                    break;
+                }
+                System.out.println("whiling");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+        AWSHelper.deleteS3Bucket(bucket, keys);
+    }
+
+    private static void bye() {
+        while (1 + 1 == 2) {
+
         }
     }
 }
