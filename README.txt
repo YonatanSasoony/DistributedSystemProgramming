@@ -26,7 +26,7 @@ ami-0a92c388d914cf40c
 types: T2.MICRO for the Manager and T2.MEDIUM for the Workers.
 
 How much time it took your program to finish working on the input files, and what was the n you used?
-TODO
+About 5 minuts, 2 iput files, n=10
 
 ********************************************************************************************************************************************************************************************
 Be sure to submit a README file. Does it contain all the requested information? If you miss any part, you will lose points. Yes including your names and ids.
@@ -34,7 +34,13 @@ Be sure to submit a README file. Does it contain all the requested information? 
 Security: In order to take care about our credentials we used security group ... TODO
 
 ▪ Did you think about scalability? Will your program work properly when 1 million clients connected at the same time? How about 2 million? 1 billion? Scalability is very important aspect of the system, be sure it is scalable!
-TODO
+
+צוואר בקבוק? לשאול על סקלביליות?
+בגלל שכל התרדים של הMANAGER מאזינים לאותו תור קשה להם לאתר את ההודעות הרלוונטיות למשימה שלהם
+אולי כדאי ליצור עוד תורים בין הWORKERS ל MANAGER? עבור כל LOCAL APP? ואז מעבירים לWORKERS בREQUEST (תור בודד) לאן לשלוח את הודעת הRESPONSE
+(אחד לכל LOCAL APP) 
+האם מימוש סקליביליות תפקידו לשפר את זמן הריצה? (יותר תורים למשל?) או להקצות יותר משאבים (יותר MANAGER למשל?)
+
 
 ▪ What about persistence? What if a node dies? What if a node stalls for a while? Have you taken care of all possible outcomes in the system? Think of more possible issues that might arise from failures.
  What did you do to solve it? What about broken communications? Be sure to handle all fail-cases!
@@ -45,24 +51,6 @@ what about if the manager dies? TODO many things..
 ▪ Threads in your application, when is it a good idea? When is it bad? Invest time to think about threads in your application!
 Using threads is a good idea in parts where our program has to perform many independent tasks. On the other hand, when we performs busy-wait for massages we did not used threads.
  
-▪ Did you run more than one client at the same time? Be sure they work properly, and finish properly, and your results are correct.
-TODO
-
-▪ Do you understand how the system works? Do a full run using pen and paper, draw the different parts and the communication that happens between them.
-TODO???
-
-▪ Did you manage the termination process? Be sure all is closed once requested!
-TODO: send termination massage after LocalApp finished everything else.. and check if all the instances were shutdown.
-
-▪ Did you take in mind the system limitations that we are using? Be sure to use it to its fullest!
-TODO
-
-▪ Are all your workers working hard? Or some are slacking? Why?
-TODO 
-
-▪ Is your manager doing more work than he's supposed to? Have you made sure each part of your system has properly defined tasks? Did you mix their tasks? Don't!
-No, our Manager is doing only what he supposed to do.
-
 ▪ Lastly, are you sure you understand what distributed means? Is there anything in your system awaiting another?
 Yes, a distributed system is a system with multiple components located on different machines that communicate and coordinate actions in order to appear as a single system to the end-user.
 Yes, The Manager waits for the LocalApp to upload files to S3. The Manager waits for the Workers to analize the data. And the LocalAPp waits for the Manager until he will make the summary file.
@@ -70,14 +58,12 @@ Yes, The Manager waits for the LocalApp to upload files to S3. The Manager waits
   
 
 
+בקבלת הודעות- איך מקבךים הודעות בצורה יעילה? ללא BUSY WAIT?
 
 
 
 
-
-
-
-
+איך עובדים עם קוד משותף בין פרויקטים?
 
 
 
