@@ -50,7 +50,7 @@ public class LocalApplication {
                     String[] content = msg.body().split(in);
                     String receivedID = content[0];
                     Integer inputNum = Integer.parseInt(content[1]);
-                    String receivedBucket = content[2]; //TODO: delete?
+                    String receivedBucket = content[2];
                     String receivedKey = content[3];
                     if (localApplicationID.equals(receivedID)) {
                         keys.add(receivedKey);
@@ -81,6 +81,6 @@ public class LocalApplication {
             }
         }
         AWSHelper.deleteS3Bucket(bucket, keys);
-        System.out.println("total time for 2 input files with n=5: " + (System.currentTimeMillis() - startTime));
+        System.out.println("total time for 2 input files with n= " + n + ": " + (System.currentTimeMillis() - startTime));
     }
 }

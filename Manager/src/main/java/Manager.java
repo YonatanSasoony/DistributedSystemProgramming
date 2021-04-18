@@ -10,14 +10,12 @@ public class Manager {
     public static void main(String[] args) {
         final ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
         boolean isTerminated = false;
-        AWSHelper.sendMessage("DebugQueue","manager active"); //TODO REMOVE
         while (!isTerminated) {
             // receive messages from the queue
             List<Message> requestMessages = AWSHelper.receiveMessages(Defs.MANAGER_REQUEST_QUEUE_NAME);
             System.out.println("request messages size: "+requestMessages.size());
             for (Message msg : requestMessages) {
                 System.out.println("manager received message: "+msg.body());
-                AWSHelper.sendMessage("DebugQueue","manager received message: "+msg.body()); //TODO REMOVE
                 if (msg.body().equals(Defs.TERMINATE_MESSAGE)) {
                     executor.shutdown();
                     isTerminated = true;

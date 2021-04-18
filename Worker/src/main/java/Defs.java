@@ -23,5 +23,4 @@ public class Defs {
 
     static final String internalDelimiter = "::";
     static final String externalDelimiter = "<:>";
-
 }

@@ -37,8 +37,8 @@ public class AWSHelper {
     private static final String amiId = "ami-0a92c388d914cf40c";
     private static final String role = "awsAdminRole";
     private static final String keyName = "awsKeyPair";
-    private static final String securityGroupIdYOS = "sg-ff035dfe";
-    private static final String securityGroupIdYON = "sg-cb94caca";
+    private static final String securityGroupIdYOSSY = "sg-ff035dfe";
+    private static final String securityGroupIdYONI = "sg-cb94caca";
 
     private static final InstanceType managerType = InstanceType.T2_MICRO;
     private static final InstanceType workerType = InstanceType.T2_MEDIUM;
@@ -46,7 +46,8 @@ public class AWSHelper {
     private static final String managerScript =
             "#!/bin/bash\n" +
             "wget https://assignment1-pre-uploaded-jar.s3.amazonaws.com/Manager.jar\n" +
-            "java -jar Manager.jar\n";
+            "java -jar Manager.jar\n" +
+            "shutdown -h now\n";
 
     private static final String workerScript =
             "#!/bin/bash\n" +
@@ -99,117 +100,7 @@ public class AWSHelper {
             e.printStackTrace();
         }
 
-        String policy =
-                "{\n" +
-                "    \"Version\": \"2012-10-17\",\n" +
-                "    \"Statement\": [\n" +
-                "        {\n" +
-                "            \"Effect\": \"Allow\",\n" +
-                "            \"Action\": \"*\",\n" +
-                "            \"Resource\": \"*\"\n" +
-                "        }\n" +
-                "    ]\n" +
-                "}";
-
-        String roleJson = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":[\"ec2.amazonaws.com\"]},\"Action\":[\"sts:AssumeRole\"]}]}";
-//
-//        CreatePolicyRequest policyRequest = CreatePolicyRequest.builder()
-//                .policyName("myPolicy")
-//                .policyDocument(policy)
-//                .build();
-//
-//        CreatePolicyResponse response = iam.createPolicy(policyRequest);
-
-        // creating a clean role
-//        CreateRoleRequest req = CreateRoleRequest.builder()
-//                .roleName(role)
-//                .assumeRolePolicyDocument(roleJson)
-//                .build();
-//        try {
-//            iam.createRole(req);
-//        } catch (Exception e) {
-//            System.out.println("couldnt create role: role_yoni");
-//        }
-//        // attaching access policy to the role
-//        AttachRolePolicyRequest attach_request = AttachRolePolicyRequest.builder()
-//                .roleName(role)
-//                .policyArn("arn:aws:iam::aws:policy/AdministratorAccess")
-//                .build();
-//        try {
-//            iam.attachRolePolicy(attach_request);
-//        } catch (Exception e) {
-//        }
-//
-//
-//        CreateInstanceProfileRequest z = CreateInstanceProfileRequest.builder()
-//                .instanceProfileName("yoni")
-//                .build();
-//
-//        IamInstanceProfileSpecification iamSpec = IamInstanceProfileSpecification.builder()
-//                .name("yoni")
-//                .build();
-//
-//        try {
-//            iam.createInstanceProfile(z);
-//        } catch (Exception e) {
-//
-//        }
-//
-//        CreateVpcRequest vpcRequest = CreateVpcRequest.builder()
-//                .cidrBlock("10.0.0.0/16")
-//                .amazonProvidedIpv6CidrBlock(true)
-//                .build();
-//        CreateVpcResponse response = ec2.createVpc(vpcRequest);
-//        String vpcId = response.vpc().vpcId();
-//
-//        CreateSubnetRequest subnetRequest = CreateSubnetRequest.builder()
-//                .vpcId(vpcId)
-//                .availabilityZone(Defs.REGION.toString()+"a")
-//                .build();
-//        ec2.createSubnet(subnetRequest);
-//
-//
-//        CreateSecurityGroupRequest groupRequest = CreateSecurityGroupRequest.builder()
-//                .groupName("group_yoni")
-//                .description("group_desc")
-//                .vpcId(vpcId)
-//                .build();
-//
-//        CreateSecurityGroupResponse groupResponse = ec2.createSecurityGroup(groupRequest);
-//        String groupId = groupResponse.groupId();
-//
-//        CreateKeyPairRequest request = CreateKeyPairRequest.builder()
-//                .keyName(keyName)
-//                .build();
-//        try {
-//            ec2.createKeyPair(request);
-//        } catch (Exception e) {
-//        }
-
-//        CreateKeyPairRequest k = CreateKeyPairRequest.builder()
-//                .keyName("yonini")
-//                .build();
-//
-//        try {
-//            ec2.createKeyPair(k);
-//        } catch (Exception e) {
-//        }
-
-
-
-//        CreateInstanceProfileRequest abc = CreateInstanceProfileRequest.builder()
-//                .instanceProfileName("yonini3")
-//                .build();
-//        try {
-//            iam.createInstanceProfile(abc);
-//        } catch (Exception e){}
-
-        ProfileCredentialsProvider x = ProfileCredentialsProvider.builder()
-                .build();
-        String id = x.resolveCredentials().accessKeyId();
-        String key = x.resolveCredentials().secretAccessKey();
-
-        IamInstanceProfileSpecification iamSpec2 = IamInstanceProfileSpecification.builder()
+        IamInstanceProfileSpecification iamSpec = IamInstanceProfileSpecification.builder()
                 .name(role)
                 .build();
 
@@ -219,8 +110,9 @@ public class AWSHelper {
                 .minCount(1)
                 .maxCount(1)
                 .keyName(keyName)
-                .securityGroupIds(securityGroupIdYON)
-                .iamInstanceProfile(iamSpec2)
+                .securityGroupIds(securityGroupIdYONI)
+                .instanceInitiatedShutdownBehavior("terminate")
+                .iamInstanceProfile(iamSpec)
                 .userData(base64UserData)
                 .build();
 
@@ -238,7 +130,6 @@ public class AWSHelper {
             ec2.createTags(tagRequest);
         } catch (Ec2Exception e) {
             System.err.println(e.getMessage());
-            System.exit(1);
         }
     }
 

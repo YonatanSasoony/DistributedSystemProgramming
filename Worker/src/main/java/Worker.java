@@ -44,7 +44,4 @@ public class Worker {
         }
         return responseMessage;
     }
-
-
-
 }

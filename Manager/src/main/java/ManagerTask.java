@@ -19,7 +19,6 @@ public class ManagerTask implements Runnable {
 
     public void run() {
         System.out.println("manager task init");
-        AWSHelper.sendMessage("DebugQueue","manager task init"); //TODO REMOVE
 
         int totalTasks = 0;
         for (Review review : this.product.reviews()) {
@@ -34,7 +33,6 @@ public class ManagerTask implements Runnable {
         int tasksCompleted = 0;
         String summaryMsg = "";
         System.out.println("sent all tasks to workers, now waiting");
-        AWSHelper.sendMessage("DebugQueue","sent all tasks to workers, now waiting"); //TODO REMOVE
 
         while (tasksCompleted < totalTasks) {
             // receive messages from the queue
@@ -63,7 +61,6 @@ public class ManagerTask implements Runnable {
 
         summaryMsg += product.title();
         System.out.println("manager task creating summary");
-        AWSHelper.sendMessage("DebugQueue","manager task creating summary"); //TODO REMOVE
 
         String key = "Summary" + System.currentTimeMillis();
         AWSHelper.uploadContentToS3(this.bucket, key, summaryMsg);
@@ -71,8 +68,5 @@ public class ManagerTask implements Runnable {
         String response = this.localAppId + in + inputNum+ in + this.bucket + in + key;
         AWSHelper.sendMessage(Defs.MANAGER_RESPONSE_QUEUE_NAME, response);
         System.out.println("manager task uploaded & sent summary");
-
-        // TODO: IMPORTANT: If a worker stops working unexpectedly before finishing its work on a message,
-        // then some other worker should be able to handle that message.
     }
 }
