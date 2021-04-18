@@ -1,17 +1,27 @@
+import com.google.gson.JsonObject;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProviderChain;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.core.sync.ResponseTransformer;
 import software.amazon.awssdk.services.ec2.Ec2Client;
 import software.amazon.awssdk.services.ec2.model.*;
+import software.amazon.awssdk.services.ec2.model.Tag;
+import software.amazon.awssdk.services.iam.IamClient;
+import software.amazon.awssdk.services.iam.IamClientBuilder;
+import software.amazon.awssdk.services.iam.model.*;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
-import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.*;
+//import software.amazon.awssdk.services.iam.*;
+
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -21,11 +31,16 @@ public class AWSHelper {
     private static Ec2Client ec2 = Ec2Client.create();
     private static SqsClient sqs = SqsClient.builder().region(Defs.REGION).build();
     private static S3Client s3 = S3Client.builder().region(Defs.REGION).build();
-    private static final String amiId = "ami-0a34a1974defc9163";
+//    private static IamClient iam = IamClient.builder().region(Defs.GLOBAL_REGION).build(); //TODO?
+
+    private static final String amiId = "ami-0a92c388d914cf40c";
     private static final String role = "awsAdminRole";
     private static final String keyName = "awsKeyPair";
     private static final String securityGroupIdYOS = "sg-ff035dfe";
     private static final String securityGroupIdYON = "sg-cb94caca";
+
+    private static final InstanceType managerType = InstanceType.T2_MICRO;
+    private static final InstanceType workerType = InstanceType.T2_MEDIUM;
 
     private static final String managerScript =
             "#!/bin/bash\n" +
@@ -44,11 +59,9 @@ public class AWSHelper {
         for (Reservation reservation : ec2.describeInstances().reservations()) {
             for (Instance instance : reservation.instances()) {
                 String id = instance.instanceId();
-                System.out.println(id);
                 List<Tag> tags = instance.tags();
                 for (Tag tag : tags) {
-                    if (tag.equals(Defs.MANAGER_TAG) && instance.state().name() != InstanceStateName.TERMINATED
-                            && instance.state().name() != InstanceStateName.SHUTTING_DOWN) {
+                    if (tag.equals(Defs.MANAGER_TAG) && instance.state().name() != InstanceStateName.TERMINATED) {
                         if (instance.state().name() != InstanceStateName.RUNNING &&
                                 instance.state().name() != InstanceStateName.PENDING) {
                             ec2.startInstances(StartInstancesRequest.builder().instanceIds(id).build());
@@ -64,11 +77,11 @@ public class AWSHelper {
     }
 
     public static void createManagerInstance() {
-        createEC2Instance(amiId, managerScript, Defs.MANAGER_TAG);
+        createEC2Instance(amiId, managerType, managerScript, Defs.MANAGER_TAG);
     }
 
     public static void createWorkerInstance() {
-        createEC2Instance(amiId, workerScript, Defs.WORKER_TAG);
+        createEC2Instance(amiId, workerType, workerScript, Defs.WORKER_TAG);
     }
 
     public static void createWorkerInstances(int n) {
@@ -77,7 +90,7 @@ public class AWSHelper {
         }
     }
 
-    private static void createEC2Instance(String amiId, String userData, Tag tag) {
+    private static void createEC2Instance(String amiId, InstanceType type, String userData, Tag tag) {
         String base64UserData = null;
         try {
             base64UserData = new String(Base64.getEncoder().encode(userData.getBytes("UTF-8")), "UTF-8");
@@ -85,23 +98,129 @@ public class AWSHelper {
             e.printStackTrace();
         }
 
-        IamInstanceProfileSpecification iamSpec = IamInstanceProfileSpecification.builder()
+        String policy =
+                "{\n" +
+                        "    \"Version\": \"2012-10-17\",\n" +
+                        "    \"Statement\": [\n" +
+                        "        {\n" +
+                        "            \"Effect\": \"Allow\",\n" +
+                        "            \"Action\": \"*\",\n" +
+                        "            \"Resource\": \"*\"\n" +
+                        "        }\n" +
+                        "    ]\n" +
+                        "}";
+
+        String roleJson = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":[\"ec2.amazonaws.com\"]},\"Action\":[\"sts:AssumeRole\"]}]}";
+//
+//        CreatePolicyRequest policyRequest = CreatePolicyRequest.builder()
+//                .policyName("myPolicy")
+//                .policyDocument(policy)
+//                .build();
+//
+//        CreatePolicyResponse response = iam.createPolicy(policyRequest);
+
+        // creating a clean role
+//        CreateRoleRequest req = CreateRoleRequest.builder()
+//                .roleName(role)
+//                .assumeRolePolicyDocument(roleJson)
+//                .build();
+//        try {
+//            iam.createRole(req);
+//        } catch (Exception e) {
+//            System.out.println("couldnt create role: role_yoni");
+//        }
+//        // attaching access policy to the role
+//        AttachRolePolicyRequest attach_request = AttachRolePolicyRequest.builder()
+//                .roleName(role)
+//                .policyArn("arn:aws:iam::aws:policy/AdministratorAccess")
+//                .build();
+//        try {
+//            iam.attachRolePolicy(attach_request);
+//        } catch (Exception e) {
+//        }
+//
+//
+//        CreateInstanceProfileRequest z = CreateInstanceProfileRequest.builder()
+//                .instanceProfileName("yoni")
+//                .build();
+//
+//        IamInstanceProfileSpecification iamSpec = IamInstanceProfileSpecification.builder()
+//                .name("yoni")
+//                .build();
+//
+//        try {
+//            iam.createInstanceProfile(z);
+//        } catch (Exception e) {
+//
+//        }
+//
+//        CreateVpcRequest vpcRequest = CreateVpcRequest.builder()
+//                .cidrBlock("10.0.0.0/16")
+//                .amazonProvidedIpv6CidrBlock(true)
+//                .build();
+//        CreateVpcResponse response = ec2.createVpc(vpcRequest);
+//        String vpcId = response.vpc().vpcId();
+//
+//        CreateSubnetRequest subnetRequest = CreateSubnetRequest.builder()
+//                .vpcId(vpcId)
+//                .availabilityZone(Defs.REGION.toString()+"a")
+//                .build();
+//        ec2.createSubnet(subnetRequest);
+//
+//
+//        CreateSecurityGroupRequest groupRequest = CreateSecurityGroupRequest.builder()
+//                .groupName("group_yoni")
+//                .description("group_desc")
+//                .vpcId(vpcId)
+//                .build();
+//
+//        CreateSecurityGroupResponse groupResponse = ec2.createSecurityGroup(groupRequest);
+//        String groupId = groupResponse.groupId();
+//
+//        CreateKeyPairRequest request = CreateKeyPairRequest.builder()
+//                .keyName(keyName)
+//                .build();
+//        try {
+//            ec2.createKeyPair(request);
+//        } catch (Exception e) {
+//        }
+
+//        CreateKeyPairRequest k = CreateKeyPairRequest.builder()
+//                .keyName("yonini")
+//                .build();
+//
+//        try {
+//            ec2.createKeyPair(k);
+//        } catch (Exception e) {
+//        }
+
+
+
+//        CreateInstanceProfileRequest abc = CreateInstanceProfileRequest.builder()
+//                .instanceProfileName("yonini3")
+//                .build();
+//        try {
+//            iam.createInstanceProfile(abc);
+//        } catch (Exception e){}
+
+        IamInstanceProfileSpecification iamSpec2 = IamInstanceProfileSpecification.builder()
                 .name(role)
+//                .arn("arn:aws:iam::aws:policy/AdministratorAccess")
                 .build();
 
         RunInstancesRequest runRequest = RunInstancesRequest.builder()
-                .instanceType(InstanceType.T2_MICRO)
+                .instanceType(type)
                 .imageId(amiId)
                 .minCount(1)
                 .maxCount(1)
                 .keyName(keyName)
                 .securityGroupIds(securityGroupIdYON)
-                .iamInstanceProfile(iamSpec)
+                .iamInstanceProfile(iamSpec2)
                 .userData(base64UserData)
                 .build();
 
-        RunInstancesResponse response = ec2.runInstances(runRequest);
-        String instanceId = response.instances().get(0).instanceId();
+        RunInstancesResponse runResponse = ec2.runInstances(runRequest);
+        String instanceId = runResponse.instances().get(0).instanceId();
         createTagForInstance(instanceId, tag);
     }
 
@@ -143,7 +262,7 @@ public class AWSHelper {
                 List<Tag> tags = instance.tags();
                 for (Tag tag : tags) {
                     if (tag.equals(Defs.WORKER_TAG) && (instance.state().name() == InstanceStateName.RUNNING
-                    || instance.state().name() == InstanceStateName.PENDING)) {
+                            || instance.state().name() == InstanceStateName.PENDING)) {
                         ids.add(id);
                     }
                 }
@@ -286,4 +405,21 @@ public class AWSHelper {
                 ResponseTransformer.toBytes()).asInputStream();
     }
 
+    public static void deleteS3Bucket(String bucket, List<String> keys) {
+        for (String key : keys) {
+            deleteObjectFromBucket(bucket, key);
+        }
+        DeleteBucketRequest request = DeleteBucketRequest.builder()
+                .bucket(bucket)
+                .build();
+        s3.deleteBucket(request);
+    }
+
+    private static void deleteObjectFromBucket(String bucket, String key) {
+        DeleteObjectRequest request = DeleteObjectRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .build();
+        s3.deleteObject(request);
+    }
 }

@@ -11,13 +11,13 @@ import org.apache.commons.io.FileUtils;
 public class LocalApplication {
 
     public static void main(String[] args) {
+        long startTime = System.currentTimeMillis();
         final ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
         final String localApplicationID = UUID.randomUUID().toString();
         final String in = Defs.internalDelimiter;
         final String ex = Defs.externalDelimiter;
         //check if manager is active on EC2 cloud, if not- start the manager node.
         AWSHelper.runManager();
-        bye(); //TODO delete
         AWSHelper.initQueues();
 
         // S3 folder for uploading input files
@@ -27,20 +27,14 @@ public class LocalApplication {
         int N = (args.length - 1) / 2;
         String n = args[2 * N];
         boolean terminate = args.length % 2 == 0;
-        boolean localTerminate = false;
+
         for (int i = 0; i < N; i++) {
             String key = args[i];
             keys.add(key);
             AWSHelper.uploadFileTOS3(bucket, key, key);
-            // request - <localApplicationID><inputNum><bucket><key><n><localTerminate>
-            localTerminate = terminate && i == N-1;
-            String request = localApplicationID + in + i + in + bucket + in + key + in + n + in + localTerminate;
-            if (localTerminate) {
-                AWSHelper.sendMessageWithDelay(Defs.MANAGER_REQUEST_QUEUE_NAME, request, 5);
-            } else {
-                AWSHelper.sendMessage(Defs.MANAGER_REQUEST_QUEUE_NAME, request);
-            }
-
+            // request - <localApplicationID><inputNum><bucket><key><n>
+            String request = localApplicationID + in + i + in + bucket + in + key + in + n;
+            AWSHelper.sendMessage(Defs.MANAGER_REQUEST_QUEUE_NAME, request);
             System.out.println("local uploaded & sent file " + key);
         }
 
@@ -70,7 +64,11 @@ public class LocalApplication {
             }
         }
         System.out.printf("wait for other threads to finish");
+        if (terminate) {
+            AWSHelper.sendMessage(Defs.MANAGER_REQUEST_QUEUE_NAME, Defs.TERMINATE_MESSAGE);
+        }
         executor.shutdown();
+
         // wait for threads to finish
         while (true) {
             try {
@@ -83,11 +81,6 @@ public class LocalApplication {
             }
         }
         AWSHelper.deleteS3Bucket(bucket, keys);
-    }
-
-    private static void bye() {
-        while (1 + 1 == 2) {
-
-        }
+        System.out.println("total time for 2 input files with n=5: " + (System.currentTimeMillis() - startTime));
     }
 }

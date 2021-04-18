@@ -50,10 +50,10 @@ public class NamedEntityRecognitionHandler {
 
 //                System.out.println("\t-" + word + ":" + ne);
                 if (types.contains(ne)) {
-                    entities += word + ":" + ne + "\n";
+                    entities += word + ":" + ne + ", ";
                 }
             }
         }
-        return entities.length() == 0 ? "No entities found." : entities.substring(0, entities.length() - 1); // remove the last char
+        return entities.length() == 0 ? "No entities found." : "[" + entities.substring(0, entities.length() - 2) + "]"; // remove the 2 last chars
     }
 }

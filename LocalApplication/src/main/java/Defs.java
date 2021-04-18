@@ -24,4 +24,5 @@ public class Defs {
     static final String internalDelimiter = "::";
     static final String externalDelimiter = "<:>";
 
+    static final String TERMINATE_MESSAGE = "Terminate.";
 }
