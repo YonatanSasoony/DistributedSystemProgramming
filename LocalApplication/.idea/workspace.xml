@@ -9,17 +9,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="75b8224a-2ddc-4b99-8a15-81e6d41029a4" name="Default Changelist" comment="Assignment1: try to create role">
+    <list default="true" id="75b8224a-2ddc-4b99-8a15-81e6d41029a4" name="Default Changelist" comment="Assignment1: removing todos">
+      <change afterPath="$PROJECT_DIR$/../Manager/target/Manager-1.0-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/AWSHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/AWSHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Defs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Defs.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/LocalApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/LocalApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Manager/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Manager/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Manager/src/main/java/AWSHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/src/main/java/AWSHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Manager/src/main/java/Defs.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/src/main/java/Defs.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Manager/src/main/java/Manager.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/src/main/java/Manager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Manager/src/main/java/ManagerTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/src/main/java/ManagerTask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Manager/target/classes/AWSHelper.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/target/classes/AWSHelper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Manager/target/classes/Defs.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/target/classes/Defs.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Manager/target/classes/Manager.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/target/classes/Manager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Manager/target/classes/ManagerTask.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/target/classes/ManagerTask.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../README.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../README.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Worker/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Worker/src/main/java/Defs.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/src/main/java/Defs.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Worker/src/main/java/Worker.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/src/main/java/Worker.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,7 +103,7 @@
       <workItem from="1618471884967" duration="36537000" />
       <workItem from="1618646969259" duration="9943000" />
       <workItem from="1618651662755" duration="4491000" />
-      <workItem from="1618732971908" duration="10704000" />
+      <workItem from="1618732971908" duration="12265000" />
     </task>
     <task id="LOCAL‎00001" summary="Assignment1: create Common project.&#10;&#10;Change Book to Product&#10;change delimiter">
       <created>1618498249935</created>
@@ -127,7 +135,13 @@
       <option name="presentableId" value="LOCAL‎00005" />
       <updated>1618658338930</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL‎00006" summary="Assignment1: removing todos">
+      <created>1618760817909</created>
+      <option name="number" value="LOCAL‎00006" />
+      <option name="presentableId" value="LOCAL‎00006" />
+      <updated>1618760817909</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -150,6 +164,7 @@
     <MESSAGE value="Assignment1: create Common project.&#10;&#10;Change Book to Product&#10;change delimiter" />
     <MESSAGE value="Assignment1: update" />
     <MESSAGE value="Assignment1: try to create role" />
-    <option name="LAST_COMMIT_MESSAGE" value="Assignment1: try to create role" />
+    <MESSAGE value="Assignment1: removing todos" />
+    <option name="LAST_COMMIT_MESSAGE" value="Assignment1: removing todos" />
   </component>
 </project>

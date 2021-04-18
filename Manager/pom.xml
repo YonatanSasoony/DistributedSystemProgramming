@@ -6,7 +6,7 @@
 
     <groupId>org.dsp.sarcasm.manager</groupId>
     <artifactId>Manager</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -40,10 +40,6 @@
             <artifactId>sqs</artifactId>
         </dependency>
         <dependency>
-            <groupId>software.amazon.awssdk</groupId>
-            <artifactId>iam</artifactId>
-        </dependency>
-        <dependency>
             <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
@@ -68,6 +64,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>

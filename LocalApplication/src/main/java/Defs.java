@@ -3,14 +3,9 @@ import software.amazon.awssdk.services.ec2.model.Tag;
 
 public class Defs {
     static final Region REGION = Region.US_EAST_1;
-    static final Region GLOBAL_REGION = Region.AWS_GLOBAL;
     static final Tag MANAGER_TAG = Tag.builder()
             .key("Type")
             .value("Manager")
-            .build();
-    static final Tag WORKER_TAG = Tag.builder()
-            .key("Type")
-            .value("Worker")
             .build();
 
     static final String MANAGER_REQUEST_QUEUE_NAME = "ManagerRequestQueue";

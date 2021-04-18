@@ -1,5 +1,4 @@
 import software.amazon.awssdk.services.sqs.model.Message;
-
 import java.util.*;
 
 public class ManagerTask implements Runnable {

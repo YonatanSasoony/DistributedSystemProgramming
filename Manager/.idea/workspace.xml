@@ -10,16 +10,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3e409ce9-a4f8-4901-b4d0-345d5ea0110a" name="Default Changelist" comment="Assignment1: run locally">
+      <change afterPath="$PROJECT_DIR$/target/Manager-1.0-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../LocalApplication/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../LocalApplication/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../LocalApplication/src/main/java/AWSHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/src/main/java/AWSHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../LocalApplication/src/main/java/Defs.java" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/src/main/java/Defs.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../LocalApplication/src/main/java/LocalApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/src/main/java/LocalApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/AWSHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/AWSHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Defs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Defs.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Manager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Manager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ManagerTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ManagerTask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/AWSHelper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/AWSHelper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Defs.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Defs.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Manager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Manager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ManagerTask.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ManagerTask.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../README.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../README.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Worker/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Worker/src/main/java/Defs.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/src/main/java/Defs.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Worker/src/main/java/Worker.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/src/main/java/Worker.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,7 +105,7 @@
       <workItem from="1618471894687" duration="23225000" />
       <workItem from="1618646989029" duration="598000" />
       <workItem from="1618651663785" duration="2220000" />
-      <workItem from="1618732932350" duration="9739000" />
+      <workItem from="1618732932350" duration="10307000" />
     </task>
     <task id="LOCAL‎00001" summary="Assignment1: run locally">
       <created>1618341049064</created>

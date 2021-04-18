@@ -1,29 +1,15 @@
-import com.google.gson.JsonObject;
-import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
-import software.amazon.awssdk.auth.credentials.AwsCredentialsProviderChain;
-import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.core.sync.ResponseTransformer;
 import software.amazon.awssdk.services.ec2.Ec2Client;
 import software.amazon.awssdk.services.ec2.model.*;
 import software.amazon.awssdk.services.ec2.model.Tag;
-import software.amazon.awssdk.services.iam.IamClient;
-import software.amazon.awssdk.services.iam.IamClientBuilder;
-import software.amazon.awssdk.services.iam.model.*;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.*;
-//import software.amazon.awssdk.services.iam.*;
-
-
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
@@ -32,7 +18,6 @@ public class AWSHelper {
     private static Ec2Client ec2 = Ec2Client.create();
     private static SqsClient sqs = SqsClient.builder().region(Defs.REGION).build();
     private static S3Client s3 = S3Client.builder().region(Defs.REGION).build();
-    private static IamClient iam = IamClient.builder().region(Defs.GLOBAL_REGION).build();
 
     private static final String amiId = "ami-0a92c388d914cf40c";
     private static final String role = "awsAdminRole";
@@ -48,11 +33,6 @@ public class AWSHelper {
             "wget https://assignment1-pre-uploaded-jar.s3.amazonaws.com/Manager.jar\n" +
             "java -jar Manager.jar\n" +
             "shutdown -h now\n";
-
-    private static final String workerScript =
-            "#!/bin/bash\n" +
-            "wget https://assignment1-pre-uploaded-jar.s3.amazonaws.com/Worker.jar\n" +
-            "java -jar Worker.jar\n";
 
     //EC2
     public static void runManager() {
@@ -80,16 +60,6 @@ public class AWSHelper {
 
     public static void createManagerInstance() {
         createEC2Instance(amiId, managerType, managerScript, Defs.MANAGER_TAG);
-    }
-
-    public static void createWorkerInstance() {
-        createEC2Instance(amiId, workerType, workerScript, Defs.WORKER_TAG);
-    }
-
-    public static void createWorkerInstances(int n) {
-        for (int i = 0; i < n; i++) {
-            createWorkerInstance();
-        }
     }
 
     private static void createEC2Instance(String amiId, InstanceType type, String userData, Tag tag) {
@@ -133,52 +103,12 @@ public class AWSHelper {
         }
     }
 
-    public static int activeWorkers() {
-        int activeWorkers = 0;
-        for (Reservation reservation : ec2.describeInstances().reservations()) {
-            for (Instance instance : reservation.instances()) {
-                String id = instance.instanceId();
-                List<Tag> tags = instance.tags();
-                for (Tag tag : tags) {
-                    if (tag.equals(Defs.WORKER_TAG) && (instance.state().name() == InstanceStateName.RUNNING
-                            || instance.state().name() == InstanceStateName.PENDING)) {
-                        activeWorkers++;
-                    }
-                }
-            }
-        }
-        return activeWorkers;
-    }
-
-    public static void shutdownWorkers() {
-        List<String> ids = new ArrayList<>();
-        for (Reservation reservation : ec2.describeInstances().reservations()) {
-            for (Instance instance : reservation.instances()) {
-                String id = instance.instanceId();
-                List<Tag> tags = instance.tags();
-                for (Tag tag : tags) {
-                    if (tag.equals(Defs.WORKER_TAG) && (instance.state().name() == InstanceStateName.RUNNING
-                            || instance.state().name() == InstanceStateName.PENDING)) {
-                        ids.add(id);
-                    }
-                }
-            }
-        }
-        if (!ids.isEmpty()) {
-            TerminateInstancesRequest request = TerminateInstancesRequest.builder()
-                    .instanceIds(ids)
-                    .build();
-            ec2.terminateInstances(request);
-        }
-    }
-
     // SQS
     public static void initQueues() {
         initQueue(Defs.MANAGER_REQUEST_QUEUE_NAME);
         initQueue(Defs.MANAGER_RESPONSE_QUEUE_NAME);
         initQueue(Defs.WORKER_REQUEST_QUEUE_NAME);
         initQueue(Defs.WORKER_RESPONSE_QUEUE_NAME);
-        initQueue("DebugQueue");//TODO REMOVE
     }
 
     private static void initQueue(String name) {
@@ -208,16 +138,6 @@ public class AWSHelper {
         SendMessageRequest sendMessageRequest = SendMessageRequest.builder()
                 .queueUrl(queueUrl(queueName))
                 .messageBody(body)
-//                .delaySeconds(5)
-                .build();
-        sqs.sendMessage(sendMessageRequest);
-    }
-
-    public static void sendMessageWithDelay(String queueName, String body, int delay) {
-        SendMessageRequest sendMessageRequest = SendMessageRequest.builder()
-                .queueUrl(queueUrl(queueName))
-                .messageBody(body)
-                .delaySeconds(delay)
                 .build();
         sqs.sendMessage(sendMessageRequest);
     }
@@ -232,28 +152,6 @@ public class AWSHelper {
             try {
                 if (!messages.isEmpty()) {
                     return messages;
-                } else {
-                    Thread.sleep(1000);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public static Message receiveSingleMessage(String queueName) {
-        ReceiveMessageRequest receiveRequest = ReceiveMessageRequest.builder()
-                .queueUrl(queueUrl(queueName))
-                .maxNumberOfMessages(1)
-                .visibilityTimeout(60)
-                .waitTimeSeconds(5) // 0 is short polling, 1-20 is long polling
-                .build();
-
-        while (true) {
-            List<Message> messages = sqs.receiveMessage(receiveRequest).messages();
-            try {
-                if (!messages.isEmpty()) {
-                    return messages.get(0);
                 } else {
                     Thread.sleep(1000);
                 }
@@ -290,11 +188,6 @@ public class AWSHelper {
     public static void uploadFileTOS3(String bucket, String key, String dataPath) {
         s3.putObject(PutObjectRequest.builder().bucket(bucket).key(key).build(),
                 RequestBody.fromFile(new File(dataPath)));
-    }
-
-    public static void uploadContentToS3(String bucket, String key, String content) {
-        s3.putObject(PutObjectRequest.builder().bucket(bucket).key(key).build(),
-                RequestBody.fromString(content));
     }
 
     public static InputStream downloadFromS3(String bucket, String key) {

@@ -30,11 +30,9 @@ About 5 minuts, 2 iput files, n=10
 
 ********************************************************************************************************************************************************************************************
 Be sure to submit a README file. Does it contain all the requested information? If you miss any part, you will lose points. Yes including your names and ids.
-▪ Did you think for more than 2 minutes about security? Do not send your credentials in plain text!
-Security: In order to take care about our credentials we used security group ... TODO
 
 ▪ Did you think about scalability? Will your program work properly when 1 million clients connected at the same time? How about 2 million? 1 billion? Scalability is very important aspect of the system, be sure it is scalable!
-
+TODO
 צוואר בקבוק? לשאול על סקלביליות?
 בגלל שכל התרדים של הMANAGER מאזינים לאותו תור קשה להם לאתר את ההודעות הרלוונטיות למשימה שלהם
 אולי כדאי ליצור עוד תורים בין הWORKERS ל MANAGER? עבור כל LOCAL APP? ואז מעבירים לWORKERS בREQUEST (תור בודד) לאן לשלוח את הודעת הRESPONSE

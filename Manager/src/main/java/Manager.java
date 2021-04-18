@@ -1,5 +1,4 @@
 import software.amazon.awssdk.services.sqs.model.*;
-
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
