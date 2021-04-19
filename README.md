@@ -73,7 +73,7 @@ Repeatedly:
 16. Local application send a terminate message to the manager if it received <i>terminate</i> as one of its arguments.
 
 Example:
-<img src="https://user-images.githubusercontent.com/62992694/115233931-2ca5fb00-a121-11eb-9fe8-97913a2deec3.jpeg" width="800" height="400" />
+<img src="https://user-images.githubusercontent.com/62992694/115233931-2ca5fb00-a121-11eb-9fe8-97913a2deec3.jpeg" width="800" height="450" />
 
 ### What type of instance did we used?
 - ami-0a92c388d914cf40c
