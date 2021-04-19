@@ -20,7 +20,7 @@ The application resides on a local (non-cloud) machine. Once started, it reads t
 - Downloads the summary file from S3, and create an html file representing the results.
 - In case of terminate mode (as defined by the command-line argument), sends a termination message to the Manager.
 
-**The Manager**
+### The Manager
 The manager process resides on an EC2 node. It checks a special SQS queue for messages from local applications. Once it receives a message it:
 - **For the case of new task message**:
 - Download the input file from S3.
@@ -40,21 +40,21 @@ The manager process resides on an EC2 node. It checks a special SQS queue for me
 - Creates response messages for the jobs, if needed.
 - Terminates.
 
-**The Workers**
+### The Workers
 A worker process resides on an EC2 node. His life cycle:
 Repeatedly:
 - Get a message from an SQS queue.
 - Perform the requested job, and return the result.
 - Remove the processed message from the SQS queue.
 
-**The Flow**
+### The Flow
 1. The LocalApp sends the input files to the Manager using S3, and also sends a SQS message to the Manager for letting him know that input file were sent.
 2. The Manager downloads the files from S3, and distributes sentiment analysis and entity extraction tasks to the Workers using SQS.
 3. The Worker performs the sentiment analysis and entity extraction tasks, and sends the output back to the Manager using SQS.
 4. The Manager collects all the outputs from the Workers and create a summary for each input file, and sends the summary back to the LocalApp using S3 and lets the LocalApp know about it using SQS.
 5. The LocalApp downloads the summary from S3, and creates HTML file. If the LocalApp got terminate as an argument it sends terminate message to the Manager.
 
-**More Detailed Flow**
+### More Detailed Flow
 1. Local Application uploads the file with the list of reviews urls to S3.
 2. Local Application sends a message (queue) stating the location of the input file on S3.
 3. Local Application does one of the following:
@@ -74,9 +74,9 @@ Repeatedly:
 15. Local Application creates html output file.
 16. Local application send a terminate message to the manager if it received <i>terminate</i> as one of its arguments.
 
-**What type of instance did we used?**
+### What type of instance did we used?
 - ami-0a92c388d914cf40c
 - types: T2.MICRO for the Manager and T2.MEDIUM for the Workers.
 
-**How much time it took your program to finish working on the input files, and what was the n you used?**
+### How much time it took your program to finish working on the input files, and what was the n you used?
 - About 5 minuts, 2 input files and n=10
