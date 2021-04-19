@@ -11,7 +11,7 @@ java -jar LocalApplication.jar inputFileName1... inputFileNameN outputFileName1.
 
 ## How The Program Works?
 
-**Local Application**
+### Local Application
 The application resides on a local (non-cloud) machine. Once started, it reads the input file from the user, and:
 - Checks if a Manager node is active on the EC2 cloud. If it is not, the application will start the manager node.
 - Uploads the file to S3.
