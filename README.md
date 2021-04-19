@@ -2,7 +2,7 @@
 
 ## Submitted by Yonatan Sasoony 205916265 and Yossy Carmeli 204752406
 
-## How To Run Your Project?
+## How To Run Our Project?
 java -jar LocalApplication.jar inputFileName1... inputFileNameN outputFileName1... outputFileNameN n [terminate]
 - inputFileNameI is the name of the input file I.
 - outputFileName is the name of the output file.
@@ -22,7 +22,7 @@ The application resides on a local (non-cloud) machine. Once started, it reads t
 
 ### The Manager
 The manager process resides on an EC2 node. It checks a special SQS queue for messages from local applications. Once it receives a message it:
-- **For the case of new task message**:
+- **In the case of new task message**:
 - Download the input file from S3.
 - Distribute the operations to be performed on the reviews to the workers using SQS queue/s.
 - Check the SQS message count and starts Worker processes (nodes) accordingly.
@@ -48,35 +48,36 @@ Repeatedly:
 - Remove the processed message from the SQS queue.
 
 ### The Flow
-1. The LocalApp sends the input files to the Manager using S3, and also sends a SQS message to the Manager for letting him know that input file were sent.
+1. The LocalApplication uploads the input files to S3 and sends a SQS message to the Manager indicating the information for downloading the uploaded files.
 2. The Manager downloads the files from S3, and distributes sentiment analysis and entity extraction tasks to the Workers using SQS.
 3. The Worker performs the sentiment analysis and entity extraction tasks, and sends the output back to the Manager using SQS.
-4. The Manager collects all the outputs from the Workers and create a summary for each input file, and sends the summary back to the LocalApp using S3 and lets the LocalApp know about it using SQS.
-5. The LocalApp downloads the summary from S3, and creates HTML file. If the LocalApp got terminate as an argument it sends terminate message to the Manager.
+4. The Manager collects all the outputs from the Workers and create a summary for each input file, uploads the content of the summary to S3 and sends a SQS message back to the LocalApplication indicating the information for downloading the uploaded content.
+5. The LocalApplication downloads the summary from S3, and creates an HTML file. If the LocalApplication got terminate as an argument it sends terminate message to the Manager.
 
 ### More Detailed Flow
 1. Local Application uploads the file with the list of reviews urls to S3.
 2. Local Application sends a message (queue) stating the location of the input file on S3.
-3. Local Application does one of the following:
-     - Starts the manager.
-     - Checks if a manager is active and if not, starts it.
+3. Local Application checks if a manager is active and if not, starts it.
 4. Manager downloads a list of reviews.
 5. Manager distributes sentiment analysis and entity extraction jobs on the workers.
 6. Manager bootstraps nodes to process messages.
-7. Worker gets a message from an SQS queue.
+7. Worker gets a message from a SQS queue.
 8. Worker performs the requested job/s on the review.
-9. Worker puts a message in an SQS queue indicating the original reviewtogether with the output of the operation performed (sentiment/extracted entities).
+9. Worker puts a message in a SQS queue indicating the original reviewtogether with the output of the operation performed (sentiment/extracted entities).
 10. Manager reads all Workers' messages from SQS and creates one summary file.
 11. Manager uploads the summary file to S3.
-12. Manager posts an SQS message about the summary file.
+12. Manager posts a SQS message about the summary file.
 13. Local Application reads SQS message.
 14. Local Application downloads the summary file from S3.
 15. Local Application creates html output file.
 16. Local application send a terminate message to the manager if it received <i>terminate</i> as one of its arguments.
+
+Example:
+<img src="https://user-images.githubusercontent.com/62992694/115233931-2ca5fb00-a121-11eb-9fe8-97913a2deec3.jpeg" width="200" height="400" />
 
 ### What type of instance did we used?
 - ami-0a92c388d914cf40c
 - types: T2.MICRO for the Manager and T2.MEDIUM for the Workers.
 
 ### How much time it took your program to finish working on the input files, and what was the n you used?
-- About 5 minuts, 2 input files and n=10
+- About 5 minuts, 2 input files and n=10 TODO
