@@ -58,8 +58,14 @@ public class LocalApplication {
                         break;
                     }
                 }
+                // check if manager active
+                if (!AWSHelper.isManagerActive()) {
+                    System.out.println("Manger has fallen, rerun");
+                    return;
+                }
             }
         }
+
         System.out.printf("wait for other threads to finish");
         if (terminate) {
             AWSHelper.sendMessage(Defs.MANAGER_REQUEST_QUEUE_NAME, Defs.TERMINATE_MESSAGE);

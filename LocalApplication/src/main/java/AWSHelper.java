@@ -35,6 +35,25 @@ public class AWSHelper {
             "shutdown -h now\n";
 
     //EC2
+
+    public static boolean isManagerActive() {
+        for (Reservation reservation : ec2.describeInstances().reservations()) {
+            for (Instance instance : reservation.instances()) {
+                String id = instance.instanceId();
+                List<Tag> tags = instance.tags();
+                for (Tag tag : tags) {
+                    if (tag.equals(Defs.MANAGER_TAG)) {
+                        if (instance.state().name() == InstanceStateName.RUNNING ||
+                                instance.state().name() == InstanceStateName.PENDING) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     public static void runManager() {
         boolean isManager = false;
         // get instances
@@ -145,20 +164,9 @@ public class AWSHelper {
     public static List<Message> receiveMessages(String queueName) {
         ReceiveMessageRequest receiveRequest = ReceiveMessageRequest.builder()
                 .queueUrl(queueUrl(queueName))
-                .waitTimeSeconds(5) // 0 is short polling, 1-20 is long polling
+                .waitTimeSeconds(20) // 0 is short polling, 1-20 is long polling
                 .build();
-        while (true) {
-            List<Message> messages = sqs.receiveMessage(receiveRequest).messages();
-            try {
-                if (!messages.isEmpty()) {
-                    return messages;
-                } else {
-                    Thread.sleep(1000);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        return sqs.receiveMessage(receiveRequest).messages();
     }
 
     public static void deleteMessages(String queueName, List<Message> messages) {
