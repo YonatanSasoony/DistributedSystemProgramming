@@ -5,14 +5,14 @@ public class ManagerTask implements Runnable {
 
     private final String localAppId;
     private final String inputNum;
-    private final Product product;
+    private final Map<String, Review> reviewsMap;
     private final String bucket;
     private static final String in = Defs.internalDelimiter;
 
-    public ManagerTask(String localAppId, String inputNum, Product product, String bucket) {
+    public ManagerTask(String localAppId, String inputNum, Map<String, Review> reviewsMap, String bucket) {
         this.localAppId = localAppId;
         this.inputNum = inputNum;
-        this.product = product;
+        this.reviewsMap = reviewsMap;
         this.bucket = bucket;
     }
 
@@ -20,7 +20,7 @@ public class ManagerTask implements Runnable {
         System.out.println("manager task init");
 
         int totalTasks = 0;
-        for (Review review : this.product.reviews()) {
+        for (Review review : this.reviewsMap.values()) {
             // request = <localAppId><inputNum><operation><reviewId><review>
             List<String> tasks = new ArrayList<>();
             tasks.add(this.localAppId + in + this.inputNum + in + Defs.SENTIMENT_ANALYSIS_OPERATION + in + review.id() + in + review.text());
@@ -47,9 +47,9 @@ public class ManagerTask implements Runnable {
 
                 if (this.localAppId.equals(localAppId) && this.inputNum.equals(inputNum)){ // relevant response
                     // need - id, rating, link, 2 outputs for each review
-                    String rating = this.product.ratingFromReviewId(reviewId).toString();
-                    String link = this.product.linkFromReviewId(reviewId);
-                    // summaryMsg - (<reviewId><rating><link><operation><output>ex)*<description>
+                    String rating = this.reviewsMap.get(reviewId).rating().toString();
+                    String link = this.reviewsMap.get(reviewId).link();
+                    // summaryMsg - (<reviewId><rating><link><operation><output>ex)^*
                     summaryMsg += reviewId + in + rating + in + link + in + operation + in + output + Defs.externalDelimiter;
                     tasksCompleted++;
                     AWSHelper.deleteMessage(Defs.WORKER_RESPONSE_QUEUE_NAME+this.localAppId+this.inputNum, msg);
@@ -58,13 +58,12 @@ public class ManagerTask implements Runnable {
             }
         }
 
-        summaryMsg += product.title();
         System.out.println("manager task creating summary");
 
         String key = "Summary" + System.currentTimeMillis();
         AWSHelper.uploadContentToS3(this.bucket, key, summaryMsg);
         // response - <localApplicationID><inputNum><bucket><key>
-        String response = this.localAppId + in + inputNum+ in + this.bucket + in + key;
+        String response = this.localAppId + in + inputNum + in + this.bucket + in + key;
         AWSHelper.sendMessage(Defs.MANAGER_RESPONSE_QUEUE_NAME, response);
         System.out.println("manager task uploaded & sent summary");
     }

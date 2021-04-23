@@ -21,10 +21,10 @@ public class LocalApplicationTask implements Runnable {
                 .lines().collect(Collectors.joining(""));
 
         System.out.println("local creating html");
-        //summaryMsg - (<reviewId><rating><link><operation><output>ex)^* <description>
+        //summaryMsg - (<reviewId><rating><link><operation><output>ex)^*
         Map<String, String[]> reviewsOutputMap = new HashMap<>();
         String[] workersOutputs = summaryMsg.split(Defs.externalDelimiter);
-        for (int i = 0; i < workersOutputs.length - 1; i++) {
+        for (int i = 0; i < workersOutputs.length; i++) {
             String[] outputContent = workersOutputs[i].split(Defs.internalDelimiter);
             String reviewId = outputContent[0];
             String rating = outputContent[1];
@@ -43,8 +43,7 @@ public class LocalApplicationTask implements Runnable {
                 outputs[3] = output;
             }
         }
-        String productDescription = workersOutputs[workersOutputs.length -1];
-        String htmlString = createHTMLString(productDescription, reviewsOutputMap);
+        String htmlString = createHTMLString(reviewsOutputMap);
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath + ".html"));
             writer.write(htmlString);
@@ -65,10 +64,10 @@ public class LocalApplicationTask implements Runnable {
                     "</body>\n" +
                     "</html>";
 
-    private static String createHTMLString(String description, Map<String,String[]> reviewsMap) {
+    private static String createHTMLString(Map<String,String[]> reviewsMap) {
         //reviewMap - id -> [rating, link, sentiment, entity]
         String htmlString = templateHTML;
-        String body = "<h2>"+description+"</h2>\n";
+        String body = "<h2>"+"Reviews from Amazon"+"</h2>\n";
         body += "<ul>\n";
         for (String reviewId : reviewsMap.keySet()) {
             String[] review = reviewsMap.get(reviewId);

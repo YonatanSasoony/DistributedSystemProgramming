@@ -1,5 +1,6 @@
 import software.amazon.awssdk.services.sqs.model.*;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -32,18 +33,15 @@ public class Manager {
                 String key = content[3];
                 Integer n = Integer.parseInt(content[4]);
 
-                Product product = JSONProductParser.parse(AWSHelper.downloadFromS3(bucket, key));
-                System.out.println(product.title());
-                int reviewsNum = product.reviews().size();
-                int requiredWorkers = (int)(Math.ceil(reviewsNum / n)); // m
+                Map<String, Review> reviewsMap = JSONParser.parse(AWSHelper.downloadFromS3(bucket, key));
+                int requiredWorkers = (int)(Math.ceil(reviewsMap.size() / n)); // m
                 activeWorkers = AWSHelper.activeWorkers();
                 int numOfWorkersToAdd = requiredWorkers - activeWorkers;
                 if (numOfWorkersToAdd > 0) {
                     totalWorkers += numOfWorkersToAdd;
                 }
                 AWSHelper.createWorkerInstances(numOfWorkersToAdd);
-
-                executor.execute(new ManagerTask(localAppId, inputNum, product, bucket));
+                executor.execute(new ManagerTask(localAppId, inputNum, reviewsMap, bucket));
                 AWSHelper.deleteMessage(Defs.MANAGER_REQUEST_QUEUE_NAME, msg);
 
             }

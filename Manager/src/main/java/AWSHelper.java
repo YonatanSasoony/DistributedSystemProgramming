@@ -38,9 +38,26 @@ public class AWSHelper {
     }
 
     public static void createWorkerInstances(int n) {
-        for (int i = 0; i < n; i++) {
+        int current = activeInstances();
+        for (int i = 0; i < n && current < 18; i++) {
             createWorkerInstance();
+            current++;
         }
+    }
+
+    private static int activeInstances() {
+        int activeInstances = 0;
+        for (Reservation reservation : ec2.describeInstances().reservations()) {
+            for (Instance instance : reservation.instances()) {
+                List<Tag> tags = instance.tags();
+                for (Tag tag : tags) {
+                    if (instance.state().name() != InstanceStateName.TERMINATED) {
+                        activeInstances++;
+                    }
+                }
+            }
+        }
+        return activeInstances;
     }
 
     private static void createEC2Instance(String amiId, InstanceType type, String userData, Tag tag) {
