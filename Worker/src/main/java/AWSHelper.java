@@ -2,7 +2,6 @@ import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.*;
 import java.util.List;
 
-//TODO: catch exceptions
 public class AWSHelper {
     private static SqsClient sqs = SqsClient.builder().region(Defs.REGION).build();
 

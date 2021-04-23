@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
-//TODO: catch exceptions
 public class AWSHelper {
     private static Ec2Client ec2 = Ec2Client.create();
     private static SqsClient sqs = SqsClient.builder().region(Defs.REGION).build();

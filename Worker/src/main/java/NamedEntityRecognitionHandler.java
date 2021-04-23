@@ -48,7 +48,6 @@ public class NamedEntityRecognitionHandler {
                 String ne = token.get(NamedEntityTagAnnotation.class);
                 System.out.println("ne in entity: "+ne);
 
-//                System.out.println("\t-" + word + ":" + ne);
                 if (types.contains(ne)) {
                     entities += word + ":" + ne + ", ";
                 }

@@ -35,7 +35,7 @@ public class ManagerTask implements Runnable {
 
         while (tasksCompleted < totalTasks) {
             // receive messages from the queue
-            List<Message> responseMessages = AWSHelper.receiveMessages(Defs.WORKER_RESPONSE_QUEUE_NAME);
+            List<Message> responseMessages = AWSHelper.receiveMessages(Defs.WORKER_RESPONSE_QUEUE_NAME+this.localAppId+this.inputNum);
             for (Message msg : responseMessages) {
                 // response = <LocalAppID><inputNum><operation><reviewID><output>
                 String[] parsedMessage = msg.body().split(in);
@@ -52,7 +52,7 @@ public class ManagerTask implements Runnable {
                     // summaryMsg - (<reviewId><rating><link><operation><output>ex)*<description>
                     summaryMsg += reviewId + in + rating + in + link + in + operation + in + output + Defs.externalDelimiter;
                     tasksCompleted++;
-                    AWSHelper.deleteMessage(Defs.WORKER_RESPONSE_QUEUE_NAME, msg);
+                    AWSHelper.deleteMessage(Defs.WORKER_RESPONSE_QUEUE_NAME+this.localAppId+this.inputNum, msg);
                     System.out.println("tasks completed: "+tasksCompleted);
                 }
             }

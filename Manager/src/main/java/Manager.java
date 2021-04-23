@@ -21,6 +21,7 @@ public class Manager {
                 if (msg.body().equals(Defs.TERMINATE_MESSAGE)) {
                     executor.shutdown();
                     isTerminated = true;
+                    AWSHelper.deleteMessage(Defs.MANAGER_REQUEST_QUEUE_NAME, msg);
                     break;
                 }
                 // request - <localApplicationID><inputNum><bucket><key><n>
@@ -41,18 +42,14 @@ public class Manager {
                     totalWorkers += numOfWorkersToAdd;
                 }
                 AWSHelper.createWorkerInstances(numOfWorkersToAdd);
-                try {
-                    executor.execute(new ManagerTask(localAppId, inputNum, product, bucket));
-                    AWSHelper.deleteMessage(Defs.MANAGER_REQUEST_QUEUE_NAME, msg);
-                } catch (RejectedExecutionException e) {
-                    // executor is full- open new manager
-                    // need to change receive message visibility time out and max number
-                    //ChangeMessageVisibility to make the failed processed massage visible to different managers..
-                }
+
+                executor.execute(new ManagerTask(localAppId, inputNum, product, bucket));
+                AWSHelper.deleteMessage(Defs.MANAGER_REQUEST_QUEUE_NAME, msg);
+
             }
             //check if there are missing active workers
             activeWorkers = AWSHelper.activeWorkers();
-            if (activeWorkers < totalWorkers) {
+            if (!isTerminated && activeWorkers < totalWorkers) {
                 AWSHelper.createWorkerInstances(totalWorkers - activeWorkers);
             }
         }

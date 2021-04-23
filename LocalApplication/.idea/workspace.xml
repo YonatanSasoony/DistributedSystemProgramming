@@ -9,25 +9,32 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="75b8224a-2ddc-4b99-8a15-81e6d41029a4" name="Default Changelist" comment="Assignment1: removing todos">
-      <change afterPath="$PROJECT_DIR$/../Manager/target/Manager-1.0-jar-with-dependencies.jar" afterDir="false" />
+    <list default="true" id="75b8224a-2ddc-4b99-8a15-81e6d41029a4" name="Default Changelist" comment="Assignment1: change receiving messages method">
+      <change afterPath="$PROJECT_DIR$/src/main/resources/o1.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/o2.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/o3.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/o4.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/o5.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Manager/target/Manager.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Worker/target/Worker.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/AWSHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/AWSHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Defs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Defs.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/LocalApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/LocalApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/AWSHelper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/AWSHelper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/LocalApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/LocalApplication.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/o4.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../Manager/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Manager/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Manager/src/main/java/AWSHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/src/main/java/AWSHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Manager/src/main/java/Defs.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/src/main/java/Defs.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Manager/src/main/java/Manager.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/src/main/java/Manager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Manager/src/main/java/ManagerTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/src/main/java/ManagerTask.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Manager/target/classes/AWSHelper.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/target/classes/AWSHelper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Manager/target/classes/Defs.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/target/classes/Defs.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Manager/target/classes/Manager.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/target/classes/Manager.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Manager/target/classes/ManagerTask.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/target/classes/ManagerTask.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../README.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../README.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Worker/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Worker/src/main/java/AWSHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/src/main/java/AWSHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Worker/src/main/java/NamedEntityRecognitionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/src/main/java/NamedEntityRecognitionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Worker/src/main/java/Worker.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/src/main/java/Worker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Worker/target/classes/Worker.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Worker/target/classes/Worker.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,6 +50,7 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+    <option name="RESET_MODE" value="MIXED" />
   </component>
   <component name="ProjectId" id="1r1f9P1FyNMUTiZfZVinO8fBOrX" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -103,7 +111,7 @@
       <workItem from="1618471884967" duration="36537000" />
       <workItem from="1618646969259" duration="9943000" />
       <workItem from="1618651662755" duration="4491000" />
-      <workItem from="1618732971908" duration="12265000" />
+      <workItem from="1618732971908" duration="22683000" />
     </task>
     <task id="LOCAL‎00001" summary="Assignment1: create Common project.&#10;&#10;Change Book to Product&#10;change delimiter">
       <created>1618498249935</created>
@@ -141,7 +149,13 @@
       <option name="presentableId" value="LOCAL‎00006" />
       <updated>1618760817909</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL‎00007" summary="Assignment1: change receiving messages method">
+      <created>1618905085911</created>
+      <option name="number" value="LOCAL‎00007" />
+      <option name="presentableId" value="LOCAL‎00007" />
+      <updated>1618905085911</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -165,6 +179,7 @@
     <MESSAGE value="Assignment1: update" />
     <MESSAGE value="Assignment1: try to create role" />
     <MESSAGE value="Assignment1: removing todos" />
-    <option name="LAST_COMMIT_MESSAGE" value="Assignment1: removing todos" />
+    <MESSAGE value="Assignment1: change receiving messages method" />
+    <option name="LAST_COMMIT_MESSAGE" value="Assignment1: change receiving messages method" />
   </component>
 </project>

@@ -13,7 +13,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 import java.util.List;
 
-//TODO: catch exceptions
 public class AWSHelper {
     private static Ec2Client ec2 = Ec2Client.create();
     private static SqsClient sqs = SqsClient.builder().region(Defs.REGION).build();
@@ -130,7 +129,7 @@ public class AWSHelper {
         initQueue(Defs.WORKER_RESPONSE_QUEUE_NAME);
     }
 
-    private static void initQueue(String name) {
+    public static void initQueue(String name) {
         try {
             CreateQueueRequest request = CreateQueueRequest.builder()
                     .queueName(name)
@@ -138,6 +137,13 @@ public class AWSHelper {
             sqs.createQueue(request);
         } catch (QueueNameExistsException e) {
         }
+    }
+
+    public static void deleteQueue(String name) {
+        DeleteQueueRequest request = DeleteQueueRequest.builder()
+                .queueUrl(queueUrl(name))
+                .build();
+        sqs.deleteQueue(request);
     }
 
     public static String queueUrl(String name) {

@@ -10,24 +10,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="55d5bc1e-a8f7-4def-9a91-32c2e0132e36" name="Default Changelist" comment="Assignment1: almost there">
-      <change afterPath="$PROJECT_DIR$/../Manager/target/Manager-1.0-jar-with-dependencies.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../LocalApplication/src/main/resources/o1.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../LocalApplication/src/main/resources/o2.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../LocalApplication/src/main/resources/o3.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../LocalApplication/src/main/resources/o4.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../LocalApplication/src/main/resources/o5.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Manager/target/Manager.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/Worker.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../LocalApplication/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../LocalApplication/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../LocalApplication/src/main/java/AWSHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/src/main/java/AWSHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../LocalApplication/src/main/java/Defs.java" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/src/main/java/Defs.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../LocalApplication/src/main/java/LocalApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/src/main/java/LocalApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../LocalApplication/target/classes/AWSHelper.class" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/target/classes/AWSHelper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../LocalApplication/target/classes/LocalApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/../LocalApplication/target/classes/LocalApplication.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../LocalApplication/target/classes/o4.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../Manager/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Manager/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Manager/src/main/java/AWSHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/src/main/java/AWSHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Manager/src/main/java/Defs.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/src/main/java/Defs.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Manager/src/main/java/Manager.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/src/main/java/Manager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Manager/src/main/java/ManagerTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/src/main/java/ManagerTask.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Manager/target/classes/AWSHelper.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/target/classes/AWSHelper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Manager/target/classes/Defs.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/target/classes/Defs.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Manager/target/classes/Manager.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/target/classes/Manager.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Manager/target/classes/ManagerTask.class" beforeDir="false" afterPath="$PROJECT_DIR$/../Manager/target/classes/ManagerTask.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../README.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../README.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/AWSHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/AWSHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/NamedEntityRecognitionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/NamedEntityRecognitionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Worker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Worker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Worker.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Worker.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,12 +45,15 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="ProjectId" id="1rHxRzUf4lAv0e3SWRa88PSFKCZ" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
@@ -87,7 +97,7 @@
       <updated>1618646814845</updated>
       <workItem from="1618646817654" duration="711000" />
       <workItem from="1618651666427" duration="591000" />
-      <workItem from="1618732932587" duration="6231000" />
+      <workItem from="1618732932587" duration="10341000" />
     </task>
     <task id="LOCAL‎00001" summary="Assignment1: almost there">
       <created>1618759658319</created>
@@ -114,6 +124,7 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Assignment1: almost there" />
     <option name="LAST_COMMIT_MESSAGE" value="Assignment1: almost there" />
   </component>

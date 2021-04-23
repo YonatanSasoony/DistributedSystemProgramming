@@ -10,16 +10,17 @@ public class Worker {
         while (true) {
             Message message = AWSHelper.receiveSingleMessage(Defs.WORKER_REQUEST_QUEUE_NAME);
             System.out.println("worker got message");
-            String response = analyzeMessage(message);
-            AWSHelper.sendMessage(Defs.WORKER_RESPONSE_QUEUE_NAME, response);
+            String response = analyzeAndSendMessage(message);
             // delete message only after finished working on task-
             // if failed, the message wont be deleted and other worker will handle this task instead
-            AWSHelper.deleteMessage(Defs.WORKER_REQUEST_QUEUE_NAME, message);
-            System.out.println("worker sent response: " + response);
+            if (response != null) {
+                AWSHelper.deleteMessage(Defs.WORKER_REQUEST_QUEUE_NAME, message);
+                System.out.println("worker sent response: " + response);
+            }
         }
     }
 
-    private static String analyzeMessage(Message message){
+    private static String analyzeAndSendMessage(Message message){
         String responseMessage = null;
         try {
             // request = <LocalAppID><inputNum><operation><reviewID><review>
@@ -38,10 +39,11 @@ public class Worker {
                 output = namedEntityRecognitionHandler.findEntities(review);
             }
             responseMessage = localAppID + in + inputNum + in + operation + in + reviewID + in + output;
-
+            AWSHelper.sendMessage(Defs.WORKER_RESPONSE_QUEUE_NAME+localAppID+inputNum, responseMessage);
         }catch (Exception e){
             e.printStackTrace();
         }
+
         return responseMessage;
     }
 }

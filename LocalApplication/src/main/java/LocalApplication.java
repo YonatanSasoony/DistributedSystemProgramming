@@ -30,11 +30,11 @@ public class LocalApplication {
             keys.add(key);
             AWSHelper.uploadFileTOS3(bucket, key, key);
             // request - <localApplicationID><inputNum><bucket><key><n>
+            AWSHelper.initQueue(Defs.WORKER_RESPONSE_QUEUE_NAME+localApplicationID+i);
             String request = localApplicationID + in + i + in + bucket + in + key + in + n;
             AWSHelper.sendMessage(Defs.MANAGER_REQUEST_QUEUE_NAME, request);
             System.out.println("local uploaded & sent file " + key);
         }
-
 
         for (int i = 0; i < N; i++) {
             boolean relevantResponse = false;
@@ -58,11 +58,6 @@ public class LocalApplication {
                         break;
                     }
                 }
-                // check if manager active
-                if (!AWSHelper.isManagerActive()) {
-                    System.out.println("Manger has fallen, rerun");
-                    return;
-                }
             }
         }
 
@@ -84,6 +79,9 @@ public class LocalApplication {
             }
         }
         AWSHelper.deleteS3Bucket(bucket, keys);
+        for (int i = 0; i < N; i++) {
+            AWSHelper.deleteQueue(Defs.WORKER_RESPONSE_QUEUE_NAME + localApplicationID + i);
+        }
         System.out.println("total time for 2 input files with n= " + n + ": " + (System.currentTimeMillis() - startTime));
     }
 }
