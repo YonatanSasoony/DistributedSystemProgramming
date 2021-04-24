@@ -80,4 +80,4 @@ Example:
 - types: T2.MICRO for the Manager and T2.MEDIUM for the Workers.
 
 ### How much time it took your program to finish working on the input files, and what was the n you used?
-- About 3 minuts, 5 input files and n=5
+- About 10 minuts, 5 input files and n=49
