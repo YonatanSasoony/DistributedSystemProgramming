@@ -103,7 +103,7 @@ public class LocalApplicationTask implements Runnable {
             case "5":
                 return "DarkGreen";
         }
-        return "White";
+        return "DarkGreen";
     }
 
     private static String getSarcasm(String rating, String sentiment) {

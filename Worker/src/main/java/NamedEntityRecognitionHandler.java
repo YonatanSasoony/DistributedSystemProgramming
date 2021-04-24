@@ -53,6 +53,6 @@ public class NamedEntityRecognitionHandler {
                 }
             }
         }
-        return entities.length() == 0 ? "No entities found." : "[" + entities.substring(0, entities.length() - 2) + "]"; // remove the 2 last chars
+        return entities.length() == 0 ? "[]" : "[" + entities.substring(0, entities.length() - 2) + "]"; // remove the 2 last chars
     }
 }

@@ -82,6 +82,6 @@ public class LocalApplication {
         for (int i = 0; i < N; i++) {
             AWSHelper.deleteQueue(Defs.WORKER_RESPONSE_QUEUE_NAME + localApplicationID + i);
         }
-        System.out.println("total time for 2 input files with n= " + n + ": " + (System.currentTimeMillis() - startTime));
+        System.out.println("total time for 2 input files with " + n + "= " + n + ": " + (System.currentTimeMillis() - startTime));
     }
 }
