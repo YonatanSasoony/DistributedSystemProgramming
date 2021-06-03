@@ -35,14 +35,7 @@ public class ExtractCollations {
 
         if(args == null || args.length != 3)
             System.out.println("invalid input");
-        double minPmi = Double.parseDouble(args[1]);
-        double relMinPmi = Double.parseDouble(args[2]);
 
-        Configuration jobconf = new Configuration();
-        Map<String, String> properties = new HashMap<>();
-        properties.put("minPmi", args[1]);
-        properties.put("relMinPmi", args[2]);
-        jobconf.setProperties(properties);
 
 //        AWSCredentials credentials = new PropertiesCredentials(...);
 //        AmazonElasticMapReduce mapReduce = new
@@ -61,14 +54,85 @@ public class ExtractCollations {
                 .withRegion(Regions.US_EAST_1)
                 .build();
 
-        HadoopJarStepConfig hadoopJarStep = new HadoopJarStepConfig()
-                .withJar("s3n://yourbucket/yourfile.jar") // This should be a full map reduce application.
-                .withMainClass("some.pack.MainClass")
-                .withArgs("s3n://yourbucket/input/", "s3n://yourbucket/output/");
-        StepConfig stepConfig = new StepConfig()
-                .withName("stepname")
-                .withHadoopJarStep(hadoopJarStep)
+        // input: data set
+        // output: decade##w1w2 -> occurrences = Cw1w2
+        HadoopJarStepConfig hadoopJarStep1 = new HadoopJarStepConfig()
+                .withJar("s3n://DspAss2/ExtractCollations.jar") // This should be a full map reduce application.
+                .withMainClass("DistributeBigramPerDecade2")
+                .withArgs("s3://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/2gram/data", "s3n://DspAss2/output1/");
+
+        // input: decade##w1w2 -> occurrences
+        // output: decade##w1w2 -> N
+        HadoopJarStepConfig hadoopJarStep2 = new HadoopJarStepConfig()
+                .withJar("s3n://DspAss2/ExtractCollations.jar") // This should be a full map reduce application.
+                .withMainClass("CountBigramPerDecade2")
+                .withArgs("s3n://DspAss2/output1/", "s3n://DspAss2/outputN/");
+
+        // input: decade##w1w2 -> occurrences
+        // output: decade##w1w2 -> Cw1
+        HadoopJarStepConfig hadoopJarStep3 = new HadoopJarStepConfig()
+                .withJar("s3n://DspAss2/ExtractCollations.jar") // This should be a full map reduce application.
+                .withMainClass("Count_Cw1")
+                .withArgs("s3n://DspAss2/output1/", "s3n://DspAss2/outputCw1/");
+
+        // input: decade##w1w2 -> occurrences
+        // output: decade##w1w2 -> Cw3
+        HadoopJarStepConfig hadoopJarStep4 = new HadoopJarStepConfig()
+                .withJar("s3n://DspAss2/ExtractCollations.jar") // This should be a full map reduce application.
+                .withMainClass("Count_Cw2")
+                .withArgs("s3n://DspAss2/output1/", "s3n://DspAss2/outputCw2/");
+
+        // input: decade##w1w2 -> occurrences
+        //        decade##w1w2 -> N
+        //        decade##w1w2 -> Cw1
+        //        decade##w1w2 -> Cw2
+        // output: decade##w1w2 -> npmi
+        HadoopJarStepConfig hadoopJarStep5 = new HadoopJarStepConfig()
+                .withJar("s3n://DspAss2/ExtractCollations.jar") // This should be a full map reduce application.
+                .withMainClass("Npmi")
+                .withArgs("s3n://DspAss2/output1/","s3n://DspAss2/outputN/",
+                          "s3n://DspAss2/outputCw1/", "s3n://DspAss2/outputCw2/",
+                          "s3n://DspAss2/outputNpmi/");
+
+        // input: decade##w1w2 -> npmi
+        // output: decade##w1w2 -> npmi (filter collocation)
+        HadoopJarStepConfig hadoopJarStep6 = new HadoopJarStepConfig()
+                .withJar("s3n://DspAss2/ExtractCollations.jar") // This should be a full map reduce application.
+                .withMainClass("isCollocations " + args[1] + " " + args[2])
+                .withArgs("s3n://DspAss2/outputNpmi/", "s3n://DspAss2/outputDspAss2/");
+
+
+        StepConfig stepConfig1 = new StepConfig()
+                .withName("stepConfig1")
+                .withHadoopJarStep(hadoopJarStep1)
                 .withActionOnFailure("TERMINATE_JOB_FLOW");
+
+        StepConfig stepConfig2 = new StepConfig()
+                .withName("stepConfig2")
+                .withHadoopJarStep(hadoopJarStep2)
+                .withActionOnFailure("TERMINATE_JOB_FLOW");
+
+        StepConfig stepConfig3 = new StepConfig()
+                .withName("stepConfig3")
+                .withHadoopJarStep(hadoopJarStep3)
+                .withActionOnFailure("TERMINATE_JOB_FLOW");
+
+        StepConfig stepConfig4 = new StepConfig()
+                .withName("stepConfig4")
+                .withHadoopJarStep(hadoopJarStep4)
+                .withActionOnFailure("TERMINATE_JOB_FLOW");
+
+        StepConfig stepConfig5 = new StepConfig()
+                .withName("stepConfig5")
+                .withHadoopJarStep(hadoopJarStep5)
+                .withActionOnFailure("TERMINATE_JOB_FLOW");
+
+        StepConfig stepConfig6 = new StepConfig()
+                .withName("stepConfig6")
+                .withHadoopJarStep(hadoopJarStep6)
+                .withActionOnFailure("TERMINATE_JOB_FLOW");
+
+
         JobFlowInstancesConfig instances = new JobFlowInstancesConfig()
                 .withInstanceCount(2)
                 .withMasterInstanceType(InstanceType.M4_LARGE.toString())
@@ -76,11 +140,12 @@ public class ExtractCollations {
                 .withHadoopVersion("2.6.0").withEc2KeyName("yourkey")
                 .withKeepJobFlowAliveWhenNoSteps(false)
                 .withPlacement(new PlacementType("us-east-1a"));
+
         RunJobFlowRequest runFlowRequest = new RunJobFlowRequest()
-                .withName("jobname")
+                .withName("DspAss2")
                 .withInstances(instances)
-                .withSteps(stepConfig)
-                .withLogUri("s3n://yourbucket/logs/");
+                .withSteps(stepConfig1,stepConfig2,stepConfig3, stepConfig4, stepConfig5, stepConfig6)
+                .withLogUri("s3n://DspAss2/logs/"); // TODO more params
         RunJobFlowResult runJobFlowResult = mapReduce.runJobFlow(runFlowRequest);
         String jobFlowId = runJobFlowResult.getJobFlowId();
         System.out.println("Ran job flow with id: " + jobFlowId);

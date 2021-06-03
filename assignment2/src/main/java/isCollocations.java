@@ -58,8 +58,9 @@ import org.apache.hadoop.mapreduce.Job;
         import java.io.IOException;
 
 
-
-        import java.util.StringTokenizer;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
 
         import org.apache.hadoop.conf.Configuration;
         import org.apache.hadoop.fs.Path;
@@ -88,12 +89,12 @@ public class isCollocations {
 
     public static class ReducerClass extends Reducer<Text,DoubleWritable,Text,DoubleWritable> {
         private static double decadeTotalNpmi  = 0;
-        double minPmi = 0.5;//TODO get args
-        double relMinPmi = 0.2;//TODO get args
 
         @Override
         // <decade, npmi1....npmiK> Or <decade##W2W1 , npmi>
         public void reduce(Text key, Iterable<DoubleWritable> value, Context context) throws IOException,  InterruptedException {
+            double minPmi = Double.parseDouble(context.getConfiguration().get("minPmi","1"));
+            double relMinPmi = Double.parseDouble(context.getConfiguration().get("relMinPmi","1"));
             if(!key.toString().contains("##")){
                 decadeTotalNpmi = 0;
                 for(DoubleWritable val : value)
@@ -119,6 +120,8 @@ public class isCollocations {
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
+        conf.set("minPmi", args[1]);
+        conf.set("relMinPmi", args[2]);
         Job job = Job.getInstance(conf, "isCollocations");
         job.setJarByClass(isCollocations.class);
         job.setMapperClass(MapperClass.class);
