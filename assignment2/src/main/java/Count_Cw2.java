@@ -8,6 +8,20 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Partitioner;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+import java.io.IOException;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Partitioner;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
@@ -50,32 +64,40 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 
-public class CountBigramPerDecade2 {
+public class Count_Cw2 {
 
     public static class MapperClass extends Mapper<Text, LongWritable, Text, LongWritable> {
-        private final static IntWritable one = new IntWritable(1);
 
         @Override
         public void map(Text decadeAndBigram, LongWritable occurrences, Context context) throws IOException, InterruptedException {
             String[] values = decadeAndBigram.toString().split("##");
             String decade = values[0];
             String bigram = values[1];
-            context.write(new Text(decade), occurrences);
-            context.write(decadeAndBigram, new LongWritable(0));
+            String w1 = bigram.split(" ")[0];
+            String w2 = bigram.split(" ")[1];
+            context.write(new Text(decade + "##" + w2), occurrences);
+            String decadeAndReverseBigram = decade + "##" + w2 + " " + w1;
+            context.write(new Text(decadeAndReverseBigram), new LongWritable(0));
         }
     }
 
     public static class ReducerClass extends Reducer<Text,LongWritable,Text,LongWritable> {
-        private static long N = 0;
+        private static long Cw2 = 0;
         @Override
-        // < decade##bigram , 0> Or <decade, occ>
+        // <decade##W2, occ1,...,occK> Or <decade##W2W1 , 0>
         public void reduce(Text key, Iterable<LongWritable> value, Context context) throws IOException,  InterruptedException {
-            if(!key.toString().contains("##")){
-                N = 0;
+            if(!key.toString().contains(" ")){
+                Cw2 = 0;
                 for(LongWritable val : value)
-                    N += val.get();
+                    Cw2 += val.get();
             }else{
-                context.write(new Text(key.toString()+"$$N"), new LongWritable(N));
+                String[] decadeAndReverseBigram = key.toString().split("##");
+                String decade = decadeAndReverseBigram[0];
+                String reversedBigram = decadeAndReverseBigram[1];
+                String w2 = reversedBigram.split(" ")[0];
+                String w1 = reversedBigram.split(" ")[1];
+                String decadeAndOriginalBigram = decade + "##" + w1 + " " + w2;
+                context.write(new Text(decadeAndOriginalBigram+"$$Cw2"), new LongWritable(Cw2));
             }
         }
     }
@@ -83,15 +105,15 @@ public class CountBigramPerDecade2 {
     public static class PartitionerClass extends Partitioner<Text, LongWritable> {
         @Override
         public int getPartition(Text key, LongWritable value, int numPartitions) {
-            String decade = key.toString().split("##")[0];
-            return decade.hashCode() % numPartitions;  // TODO: numPartitions? and hashCode()?
+            String decadeAndW2 = key.toString().split(" ")[0];
+            return decadeAndW2.hashCode() % numPartitions;  // TODO: numPartitions? and hashCode()?
         }
     }
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
-        Job job = Job.getInstance(conf, "count bigram per decade");
-        job.setJarByClass(CountBigramPerDecade2.class);
+        Job job = Job.getInstance(conf, "count C(w2)");
+        job.setJarByClass(Count_Cw2.class);
         job.setMapperClass(MapperClass.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(LongWritable.class);

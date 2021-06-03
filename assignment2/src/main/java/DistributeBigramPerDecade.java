@@ -37,7 +37,6 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class DistributeBigramPerDecade {
 
-    // <lineId> <line> <> <>
     public static class MapperClass extends Mapper<LongWritable, Text, IntWritable, Text> {
         @Override
         public void map(LongWritable lineId, Text line, Context context) throws IOException,  InterruptedException {
