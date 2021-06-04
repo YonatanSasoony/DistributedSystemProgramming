@@ -10,72 +10,13 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.IOException;
 
-import org.apache.hadoop.conf.Configuration;
-        import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
-        import org.apache.hadoop.mapreduce.Job;
-        import org.apache.hadoop.mapreduce.Mapper;
-        import org.apache.hadoop.mapreduce.Partitioner;
-        import org.apache.hadoop.mapreduce.Reducer;
-        import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-        import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-
-        import java.io.IOException;
-
-        import org.apache.hadoop.conf.Configuration;
-        import org.apache.hadoop.fs.Path;
-        import org.apache.hadoop.io.IntWritable;
-        import org.apache.hadoop.io.LongWritable;
-        import org.apache.hadoop.io.Text;
-        import org.apache.hadoop.mapreduce.Job;
-        import org.apache.hadoop.mapreduce.Mapper;
-        import org.apache.hadoop.mapreduce.Partitioner;
-        import org.apache.hadoop.mapreduce.Reducer;
-        import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-        import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
-        import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-
-        import java.io.IOException;
 
 //package dsp.hadoop.examples;
-        import java.io.DataInput;
-
-        import java.io.DataOutput;
-        import java.io.IOException;
-        import java.text.SimpleDateFormat;
-        import java.util.Calendar;
-
-        import org.apache.hadoop.conf.Configuration;
-        import org.apache.hadoop.fs.Path;
-        import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.mapreduce.Job;
-        import org.apache.hadoop.mapreduce.Mapper;
-        import org.apache.hadoop.mapreduce.Reducer;
-        import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-        import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
-        import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-        import java.io.IOException;
 
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
-
-        import org.apache.hadoop.conf.Configuration;
-        import org.apache.hadoop.fs.Path;
-        import org.apache.hadoop.io.IntWritable;
-        import org.apache.hadoop.io.LongWritable;
-        import org.apache.hadoop.io.Text;
-        import org.apache.hadoop.mapreduce.Job;
-        import org.apache.hadoop.mapreduce.Mapper;
-        import org.apache.hadoop.mapreduce.Partitioner;
-        import org.apache.hadoop.mapreduce.Reducer;
-        import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-        import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-
-
-public class isCollocations {
+public class StepFilterCollocations {
 
     public static class MapperClass extends Mapper<Text, DoubleWritable, Text, DoubleWritable> {
 
@@ -122,8 +63,8 @@ public class isCollocations {
         Configuration conf = new Configuration();
         conf.set("minPmi", args[1]);
         conf.set("relMinPmi", args[2]);
-        Job job = Job.getInstance(conf, "isCollocations");
-        job.setJarByClass(isCollocations.class);
+        Job job = Job.getInstance(conf, "filter collocations");
+        job.setJarByClass(StepFilterCollocations.class);
         job.setMapperClass(MapperClass.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(DoubleWritable.class);

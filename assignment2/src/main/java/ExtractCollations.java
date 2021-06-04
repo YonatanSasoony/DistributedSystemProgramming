@@ -33,8 +33,11 @@ import software.amazon.awssdk.services.ec2.model.Tag;
 public class ExtractCollations {
     public static void main(String[] args) {
         System.out.println("Hello ExtractCollations main");//TODO remove
-        if(args == null || args.length != 3)
-            System.out.println("invalid input usage: java -jar ass2.jar ExtractCollations <minPmi> <relMinPmi>");
+        if(args == null || args.length != 2) {
+            System.out.println("invalid input usage: java -cp ass2.jar ExtractCollations <minPmi> <relMinPmi>");
+            System.out.println("args0:"+args[0]);
+            return;
+        }
 
 //        AWSCredentials credentials = new PropertiesCredentials(...);
 //        AmazonElasticMapReduce mapReduce = new
@@ -55,81 +58,81 @@ public class ExtractCollations {
 
         // input: data set
         // output: decade##w1w2 -> occurrences = Cw1w2
-        HadoopJarStepConfig hadoopJarStep1 = new HadoopJarStepConfig()
+        HadoopJarStepConfig hadoopJarStepCalcCw1Cw2 = new HadoopJarStepConfig()
                 .withJar("s3n://dsp-ass2/ExtractCollations.jar") // This should be a full map reduce application.
-                .withMainClass("DistributeBigramPerDecade2")
+                .withMainClass("StepCalcCw1Cw2")
                 //.withArgs("s3://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/2gram/data", "s3n://dsp-ass2/output1/");
-                .withArgs("s3://dsp-ass2/bigrams.txt", "s3n://dsp-ass2/output1/");
+                .withArgs("s3://dsp-ass2/bigrams.txt", "s3n://dsp-ass2/outputCw1Cw2/");
 
-        // input: decade##w1w2 -> occurrences
+        // input: decade##w1w2 -> occurrences = Cw1w2
         // output: decade##w1w2 -> N
-        HadoopJarStepConfig hadoopJarStep2 = new HadoopJarStepConfig()
+        HadoopJarStepConfig hadoopJarStepCalcN = new HadoopJarStepConfig()
                 .withJar("s3n://dsp-ass2/ExtractCollations.jar") // This should be a full map reduce application.
-                .withMainClass("CountBigramPerDecade2")
-                .withArgs("s3n://dsp-ass2/output1/", "s3n://dsp-ass2/outputN/");
+                .withMainClass("StepCalcN")
+                .withArgs("s3n://dsp-ass2/outputCw1Cw2/", "s3n://dsp-ass2/outputN/");
 
-        // input: decade##w1w2 -> occurrences
+        // input: decade##w1w2 -> occurrences = Cw1w2
         // output: decade##w1w2 -> Cw1
-        HadoopJarStepConfig hadoopJarStep3 = new HadoopJarStepConfig()
+        HadoopJarStepConfig hadoopJarStepCalcCw1 = new HadoopJarStepConfig()
                 .withJar("s3n://dsp-ass2/ExtractCollations.jar") // This should be a full map reduce application.
-                .withMainClass("Count_Cw1")
-                .withArgs("s3n://dsp-ass2/output1/", "s3n://dsp-ass2/outputCw1/");
+                .withMainClass("StepCalcCw1")
+                .withArgs("s3n://dsp-ass2/outputCw1Cw2/", "s3n://dsp-ass2/outputCw1/");
 
-        // input: decade##w1w2 -> occurrences
+        // input: decade##w1w2 -> occurrences = Cw1w2
         // output: decade##w1w2 -> Cw3
-        HadoopJarStepConfig hadoopJarStep4 = new HadoopJarStepConfig()
+        HadoopJarStepConfig hadoopJarStepCalcCw2 = new HadoopJarStepConfig()
                 .withJar("s3n://dsp-ass2/ExtractCollations.jar") // This should be a full map reduce application.
-                .withMainClass("Count_Cw2")
-                .withArgs("s3n://dsp-ass2/output1/", "s3n://dsp-ass2/outputCw2/");
+                .withMainClass("StepCalcCw2")
+                .withArgs("s3n://dsp-ass2/outputCw1Cw2/", "s3n://dsp-ass2/outputCw2/");
 
-        // input: decade##w1w2 -> occurrences
+        // input: decade##w1w2 -> occurrences = Cw1w2
         //        decade##w1w2 -> N
         //        decade##w1w2 -> Cw1
         //        decade##w1w2 -> Cw2
         // output: decade##w1w2 -> npmi
-        HadoopJarStepConfig hadoopJarStep5 = new HadoopJarStepConfig()
+        HadoopJarStepConfig hadoopJarStepCalcNpmi = new HadoopJarStepConfig()
                 .withJar("s3n://dsp-ass2/ExtractCollations.jar") // This should be a full map reduce application.
-                .withMainClass("Npmi")
-                .withArgs("s3n://dsp-ass2/output1/","s3n://dsp-ass2/outputN/",
+                .withMainClass("StepCalcNpmi")
+                .withArgs("s3n://dsp-ass2/outputCw1Cw2/","s3n://dsp-ass2/outputN/",
                           "s3n://dsp-ass2/outputCw1/", "s3n://dsp-ass2/outputCw2/",
                           "s3n://dsp-ass2/outputNpmi/");
 
         // input: decade##w1w2 -> npmi
         // output: decade##w1w2 -> npmi (filter collocation)
-        HadoopJarStepConfig hadoopJarStep6 = new HadoopJarStepConfig()
+        HadoopJarStepConfig hadoopJarStepFilterCollocations = new HadoopJarStepConfig()
                 .withJar("s3n://dsp-ass2/ExtractCollations.jar") // This should be a full map reduce application.
-                .withMainClass("isCollocations " + args[1] + " " + args[2])
+                .withMainClass("StepFilterCollocations " + args[0] + " " + args[1])
                 .withArgs("s3n://dsp-ass2/outputNpmi/", "s3n://dsp-ass2/outputDspAss2/");
 
 
         StepConfig stepConfig1 = new StepConfig()
                 .withName("stepConfig1")
-                .withHadoopJarStep(hadoopJarStep1)
+                .withHadoopJarStep(hadoopJarStepCalcCw1Cw2)
                 .withActionOnFailure("TERMINATE_JOB_FLOW");
 
         StepConfig stepConfig2 = new StepConfig()
                 .withName("stepConfig2")
-                .withHadoopJarStep(hadoopJarStep2)
+                .withHadoopJarStep(hadoopJarStepCalcN)
                 .withActionOnFailure("TERMINATE_JOB_FLOW");
 
         StepConfig stepConfig3 = new StepConfig()
                 .withName("stepConfig3")
-                .withHadoopJarStep(hadoopJarStep3)
+                .withHadoopJarStep(hadoopJarStepCalcCw1)
                 .withActionOnFailure("TERMINATE_JOB_FLOW");
 
         StepConfig stepConfig4 = new StepConfig()
                 .withName("stepConfig4")
-                .withHadoopJarStep(hadoopJarStep4)
+                .withHadoopJarStep(hadoopJarStepCalcCw2)
                 .withActionOnFailure("TERMINATE_JOB_FLOW");
 
         StepConfig stepConfig5 = new StepConfig()
                 .withName("stepConfig5")
-                .withHadoopJarStep(hadoopJarStep5)
+                .withHadoopJarStep(hadoopJarStepCalcNpmi)
                 .withActionOnFailure("TERMINATE_JOB_FLOW");
 
         StepConfig stepConfig6 = new StepConfig()
                 .withName("stepConfig6")
-                .withHadoopJarStep(hadoopJarStep6)
+                .withHadoopJarStep(hadoopJarStepFilterCollocations)
                 .withActionOnFailure("TERMINATE_JOB_FLOW");
 
 
@@ -145,14 +148,18 @@ public class ExtractCollations {
                 .withName("DspAss2")
                 .withInstances(instances)
                 .withSteps(stepConfig1,stepConfig2,stepConfig3, stepConfig4, stepConfig5, stepConfig6)
-                .withLogUri("s3n://dsp-ass2/logs/");
-                // TODO more params??
-//                .serviceRole("EMR_DefaultRole")
-//                .jobFlowRole("EMR_EC2_DefaultRole")
+                .withLogUri("s3n://dsp-ass2/logs/")
+                .withServiceRole("EMR_DefaultRole")// TODO  params??
+                .withJobFlowRole("EMR_EC2_DefaultRole"); // TODO  params??
 
         RunJobFlowResult runJobFlowResult = mapReduce.runJobFlow(runFlowRequest);
         String jobFlowId = runJobFlowResult.getJobFlowId();
         System.out.println("Ran job flow with id: " + jobFlowId);
 
+        // how to run:
+        // in main folder-
+        // mvn clean compile assembly:single
+        // cd target
+        // java -cp ExtractCollations-1.0-jar-with-dependencies.jar ExtractCollations 0.5 0.2
     }
 }

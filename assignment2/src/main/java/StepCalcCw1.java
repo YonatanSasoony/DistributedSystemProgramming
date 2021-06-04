@@ -1,6 +1,5 @@
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -12,59 +11,10 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.IOException;
 
-import org.apache.hadoop.conf.Configuration;
-        import org.apache.hadoop.fs.Path;
-        import org.apache.hadoop.io.IntWritable;
-        import org.apache.hadoop.io.LongWritable;
-        import org.apache.hadoop.io.Text;
-        import org.apache.hadoop.mapreduce.Job;
-        import org.apache.hadoop.mapreduce.Mapper;
-        import org.apache.hadoop.mapreduce.Partitioner;
-        import org.apache.hadoop.mapreduce.Reducer;
-        import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-        import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
-        import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-
-        import java.io.IOException;
-
 //package dsp.hadoop.examples;
-        import java.io.DataInput;
-
-        import java.io.DataOutput;
-        import java.io.IOException;
-        import java.text.SimpleDateFormat;
-        import java.util.Calendar;
-
-        import org.apache.hadoop.conf.Configuration;
-        import org.apache.hadoop.fs.Path;
-        import org.apache.hadoop.io.IntWritable;
-        import org.apache.hadoop.io.WritableComparable;
-        import org.apache.hadoop.mapreduce.Job;
-        import org.apache.hadoop.mapreduce.Mapper;
-        import org.apache.hadoop.mapreduce.Reducer;
-        import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-        import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
-        import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-        import java.io.IOException;
 
 
-
-        import java.util.StringTokenizer;
-
-        import org.apache.hadoop.conf.Configuration;
-        import org.apache.hadoop.fs.Path;
-        import org.apache.hadoop.io.IntWritable;
-        import org.apache.hadoop.io.LongWritable;
-        import org.apache.hadoop.io.Text;
-        import org.apache.hadoop.mapreduce.Job;
-        import org.apache.hadoop.mapreduce.Mapper;
-        import org.apache.hadoop.mapreduce.Partitioner;
-        import org.apache.hadoop.mapreduce.Reducer;
-        import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-        import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-
-
-public class Count_Cw1 {
+public class StepCalcCw1 {
 
     public static class MapperClass extends Mapper<Text, LongWritable, Text, LongWritable> {
 
@@ -104,8 +54,8 @@ public class Count_Cw1 {
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
-        Job job = Job.getInstance(conf, "count C(w1)");
-        job.setJarByClass(Count_Cw1.class);
+        Job job = Job.getInstance(conf, "calc Cw1");
+        job.setJarByClass(StepCalcCw1.class);
         job.setMapperClass(MapperClass.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(LongWritable.class);
