@@ -37,8 +37,8 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class DistributeBigramPerDecade2 {
 
-    // <lineId> <line> <> <>
     public static class MapperClass extends Mapper<LongWritable, Text, Text, LongWritable> {
+        private static StopWordsSet s = StopWordsSet.getInstance();
         @Override
         public void map(LongWritable lineId, Text line, Context context) throws IOException,  InterruptedException {
             String[] lineData = line.toString().split("\t");
@@ -48,7 +48,10 @@ public class DistributeBigramPerDecade2 {
                 Integer occurrences  = Integer.parseInt(lineData[2]);
                 String decade = Integer.toString(year/10);
                 Text key = new Text(decade + "##" + bigram);
-                context.write(key, new LongWritable(occurrences));
+                String w1 = bigram.split(" ")[0];
+                String w2 = bigram.split(" ")[1];
+                if(!s.contains(w1) && !s.contains(w2))
+                    context.write(key, new LongWritable(occurrences));
             }catch (Exception e){
                 return;
             }
