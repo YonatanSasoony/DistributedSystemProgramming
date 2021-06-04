@@ -18,13 +18,15 @@ import java.io.IOException;
 public class StepCalcN {
 
     public static class MapperClass extends Mapper<Text, LongWritable, Text, LongWritable> {
-        private final static IntWritable one = new IntWritable(1);
 
         @Override
         public void map(Text decadeAndBigram, LongWritable occurrences, Context context) throws IOException, InterruptedException {
+            System.out.println("MAPPER");
             String[] values = decadeAndBigram.toString().split("##");
             String decade = values[0];
             String bigram = values[1];
+            System.out.println("decade:"+decade);
+            System.out.println("decadeAndBigram:"+decadeAndBigram.toString());
             context.write(new Text(decade), occurrences);
             context.write(decadeAndBigram, new LongWritable(0));
         }
@@ -35,11 +37,18 @@ public class StepCalcN {
         @Override
         // < decade##bigram , 0> Or <decade, occ>
         public void reduce(Text key, Iterable<LongWritable> value, Context context) throws IOException,  InterruptedException {
+            System.out.println("REDUCER");
+            System.out.println("key:"+key.toString());
+            for(LongWritable val : value) {
+                System.out.println("val:"+val.toString());
+            }
+            System.out.println("#####################");
             if(!key.toString().contains("##")){
                 N = 0;
                 for(LongWritable val : value)
                     N += val.get();
             }else{
+                System.out.println("WRITING:"+N);
                 context.write(new Text(key.toString()+"$$N"), new LongWritable(N));
             }
         }
@@ -54,6 +63,9 @@ public class StepCalcN {
     }
 
     public static void main(String[] args) throws Exception {
+        String input = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\Cw1Cw2.txt\\";
+        String output = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\N_output";
+        System.out.println("MAIN");
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "calc N");
         job.setJarByClass(StepCalcN.class);
@@ -65,9 +77,9 @@ public class StepCalcN {
         job.setReducerClass(ReducerClass.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(LongWritable.class);
-        //job.setInputFormatClass(SequenceFileInputFormat.class); TODO: how to read the new input?
-        FileInputFormat.addInputPath(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        job.setInputFormatClass(BigramInputFormat.class);// TODO: how to read the new input?
+        FileInputFormat.addInputPath(job, new Path(input));
+        FileOutputFormat.setOutputPath(job, new Path(output));
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
 }

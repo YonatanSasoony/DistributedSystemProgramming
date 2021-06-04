@@ -1,9 +1,7 @@
-package dsp.hadoop.examples;
-
 import java.io.IOException;
 
 
-
+import java.util.Properties;
 import java.util.StringTokenizer;
 
 import org.apache.hadoop.conf.Configuration;
@@ -53,6 +51,12 @@ public static class MapperClass extends Mapper<LongWritable, Text, Text, IntWrit
     }
  
  public static void main(String[] args) throws Exception {
+     Properties props = System.getProperties();
+     props.setProperty("hadoop.home.dir", "C:\\hadoop");
+
+    String input = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\wordcount_input.txt";
+    String output = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\wordcount_input2.txt";
+
     Configuration conf = new Configuration();
     Job job = Job.getInstance(conf, "word count");
     job.setJarByClass(WordCount.class);
@@ -64,8 +68,8 @@ public static class MapperClass extends Mapper<LongWritable, Text, Text, IntWrit
     job.setMapOutputValueClass(IntWritable.class);
     job.setOutputKeyClass(Text.class);
     job.setOutputValueClass(IntWritable.class);
-    FileInputFormat.addInputPath(job, new Path(args[0]));
-    FileOutputFormat.setOutputPath(job, new Path(args[1]));
+    FileInputFormat.addInputPath(job, new Path(input));
+    FileOutputFormat.setOutputPath(job, new Path(output));
     System.exit(job.waitForCompletion(true) ? 0 : 1);
   }
  
