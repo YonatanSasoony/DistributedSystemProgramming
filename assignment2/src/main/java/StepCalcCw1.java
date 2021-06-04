@@ -8,11 +8,7 @@ import org.apache.hadoop.mapreduce.Partitioner;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-
 import java.io.IOException;
-
-//package dsp.hadoop.examples;
-
 
 public class StepCalcCw1 {
 
@@ -39,7 +35,7 @@ public class StepCalcCw1 {
                 for(LongWritable val : value)
                     Cw1 += val.get();
             }else{
-                context.write(new Text(key.toString()+"$$Cw1"), new LongWritable(Cw1));
+                context.write(new Text(key.toString()+"@Cw1"), new LongWritable(Cw1));
             }
         }
     }
@@ -48,11 +44,13 @@ public class StepCalcCw1 {
         @Override
         public int getPartition(Text key, LongWritable value, int numPartitions) {
             String decadeAndW1 = key.toString().split(" ")[0];
-            return decadeAndW1.hashCode() % numPartitions;  // TODO: numPartitions? and hashCode()?
+            return decadeAndW1.hashCode() % numPartitions;
         }
     }
 
     public static void main(String[] args) throws Exception {
+        String input = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\Cw1w2_output\\part-r-00000";
+        String output = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\Cw1_output";
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "calc Cw1");
         job.setJarByClass(StepCalcCw1.class);
@@ -60,13 +58,12 @@ public class StepCalcCw1 {
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(LongWritable.class);
         job.setPartitionerClass(PartitionerClass.class);
-        job.setCombinerClass(ReducerClass.class);
         job.setReducerClass(ReducerClass.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(LongWritable.class);
-        //job.setInputFormatClass(SequenceFileInputFormat.class); TODO: how to read the new input?
-        FileInputFormat.addInputPath(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        job.setInputFormatClass(LineToTextAndLongInputFormat.class);
+        FileInputFormat.addInputPath(job, new Path(input));
+        FileOutputFormat.setOutputPath(job, new Path(output));
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
 }

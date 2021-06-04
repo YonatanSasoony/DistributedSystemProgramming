@@ -1,5 +1,3 @@
-//package dsp.hadoop.examples;
-
 import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -13,7 +11,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Partitioner;
 
 
-public class StepCalcCw1Cw2 {
+public class StepCalcCw1w2 {
 
     public static class MapperClass extends Mapper<LongWritable, Text, Text, LongWritable> {
         private static StopWordsSet s = StopWordsSet.getInstance();
@@ -50,18 +48,17 @@ public class StepCalcCw1Cw2 {
     public static class PartitionerClass extends Partitioner<Text, LongWritable> {
         @Override
         public int getPartition(Text key, LongWritable value, int numPartitions) {
-            return key.hashCode() % numPartitions;  // TODO: numPartitions? and hashCode()?
+            return key.hashCode() % numPartitions;
         }
     }
 
     public static void main(String[] args) throws Exception {
-        System.out.println("Hello World");//TODO remove
         String input = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\bigrams.txt";
-        String output = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\Cw1Cw2_output";
+        String output = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\Cw1w2_output";
 
         Configuration conf = new Configuration();
-        Job job = Job.getInstance(conf, "calc Cw1Cw2");
-        job.setJarByClass(StepCalcCw1Cw2.class);
+        Job job = Job.getInstance(conf, "calc Cw1w2");
+        job.setJarByClass(StepCalcCw1w2.class);
         job.setMapperClass(MapperClass.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(LongWritable.class);
@@ -70,9 +67,10 @@ public class StepCalcCw1Cw2 {
         job.setReducerClass(ReducerClass.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(LongWritable.class);
-        //job.setInputFormatClass(SequenceFileInputFormat.class); TODO turn on when using full data set
+        //job.setInputFormatClass(SequenceFileInputFormat.class); //TODO turn on when using full data set
         FileInputFormat.addInputPath(job, new Path(input));
         FileOutputFormat.setOutputPath(job, new Path(output));
+
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
 

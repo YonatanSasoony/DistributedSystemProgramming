@@ -1,23 +1,19 @@
-
-import java.io.IOException;
-
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.input.LineRecordReader;
-import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.Text;
+import java.io.IOException;
 
-public abstract class BigramRecordReader extends RecordReader<Text,LongWritable> {
+
+public class LineToTextAndLongRecordReader extends RecordReader<Text, LongWritable> {
 
     protected LineRecordReader reader;
     protected Text key;
     protected LongWritable value;
 
-    protected abstract Text parseKey(String str);
-    protected abstract LongWritable parseValue(String str) throws IOException;
-
-    BigramRecordReader() {
+    LineToTextAndLongRecordReader() {
         reader = new LineRecordReader();
         key = null;
         value = null;
@@ -28,7 +24,6 @@ public abstract class BigramRecordReader extends RecordReader<Text,LongWritable>
         reader.initialize(split, context);
     }
 
-
     @Override
     public void close() throws IOException {
         reader.close();
@@ -37,8 +32,9 @@ public abstract class BigramRecordReader extends RecordReader<Text,LongWritable>
     @Override
     public boolean nextKeyValue() throws IOException, InterruptedException {
         if (reader.nextKeyValue()) {
-            key = parseKey(reader.getCurrentValue().toString());
-            value = parseValue(reader.getCurrentValue().toString());
+            String[] toks = reader.getCurrentValue().toString().split("\t");
+            key = new Text(toks[0]);
+            value = new LongWritable(Long.parseLong(toks[1]));
             return true;
         } else {
             key = null;
@@ -57,10 +53,9 @@ public abstract class BigramRecordReader extends RecordReader<Text,LongWritable>
         return value;
     }
 
-
     @Override
     public float getProgress() throws IOException, InterruptedException {
         return reader.getProgress();
     }
-
 }
+
