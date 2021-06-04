@@ -74,6 +74,7 @@ public class DistributeBigramPerDecade2 {
     }
 
     public static void main(String[] args) throws Exception {
+        System.out.println("Hello World");//TODO remove
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "distribute bigram");
         job.setJarByClass(DistributeBigramPerDecade2.class);
@@ -85,7 +86,7 @@ public class DistributeBigramPerDecade2 {
         job.setReducerClass(ReducerClass.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(LongWritable.class);
-        job.setInputFormatClass(SequenceFileInputFormat.class);
+        //job.setInputFormatClass(SequenceFileInputFormat.class); TODO turn on when using full data set
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
         System.exit(job.waitForCompletion(true) ? 0 : 1);

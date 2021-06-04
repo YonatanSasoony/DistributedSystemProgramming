@@ -135,8 +135,11 @@ public class Npmi {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(DoubleWritable.class);
         //job.setInputFormatClass(SequenceFileInputFormat.class); TODO: how to read the new input?
-        FileInputFormat.addInputPath(job, new Path(args[0])); // TODO add 4 input paths
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileInputFormat.addInputPath(job, new Path(args[1]));
+        FileInputFormat.addInputPath(job, new Path(args[2]));
+        FileInputFormat.addInputPath(job, new Path(args[3]));
+        FileOutputFormat.setOutputPath(job, new Path(args[4]));
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
 }
