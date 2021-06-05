@@ -37,7 +37,7 @@ public class StepSortCollocations {
             if (!decade.equals(prevDecade)) {
                 prevDecade = decade;
                 context.write(new Text(""), new Text(""));
-                context.write(new Text("Decade:"), new Text(decade));
+                context.write(new Text("Decade:"), new Text(decade+"0s"));
             }
             context.write(new Text(bigram), new Text(npmi));
         }
