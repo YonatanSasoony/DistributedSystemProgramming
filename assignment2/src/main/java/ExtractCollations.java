@@ -47,9 +47,7 @@ public class ExtractCollations {
             credentials_profile = new ProfileCredentialsProvider("default").getCredentials(); // specifies any named profile in .aws/credentials as the credentials provider
         } catch (Exception e) {
             throw new AmazonClientException(
-                    "Cannot load credentials from .aws/credentials file. " +
-                            "Make sure that the credentials file exists and that the profile name is defined within it.",
-                    e);
+                    "Cannot load credentials from .aws/credentials file. Make sure that the credentials file exists and that the profile name is defined within it.", e);
         }
         AmazonElasticMapReduce mapReduce = AmazonElasticMapReduceClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(credentials_profile))
@@ -79,7 +77,7 @@ public class ExtractCollations {
                 .withArgs("s3n://dsp-ass2/outputCw1Cw2/", "s3n://dsp-ass2/outputCw1/");
 
         // input: decade##w1w2 -> occurrences = Cw1w2
-        // output: decade##w1w2 -> Cw3
+        // output: decade##w1w2 -> Cw2
         HadoopJarStepConfig hadoopJarStepCalcCw2 = new HadoopJarStepConfig()
                 .withJar("s3n://dsp-ass2/ExtractCollations.jar") // This should be a full map reduce application.
                 .withMainClass("StepCalcCw2")
@@ -102,6 +100,13 @@ public class ExtractCollations {
         HadoopJarStepConfig hadoopJarStepFilterCollocations = new HadoopJarStepConfig()
                 .withJar("s3n://dsp-ass2/ExtractCollations.jar") // This should be a full map reduce application.
                 .withMainClass("StepFilterCollocations " + args[0] + " " + args[1])
+                .withArgs("s3n://dsp-ass2/outputNpmi/", "s3n://dsp-ass2/outputDspAss2/");
+
+        // input: decade##w1w2 -> npmi (filter collocation)
+        // output: decade##w1w2 -> npmi (sorted collocation)
+        HadoopJarStepConfig hadoopJarStepSortCollocations = new HadoopJarStepConfig()
+                .withJar("s3n://dsp-ass2/ExtractCollations.jar") // This should be a full map reduce application.
+                .withMainClass("StepSortCollocations " + args[0] + " " + args[1])
                 .withArgs("s3n://dsp-ass2/outputNpmi/", "s3n://dsp-ass2/outputDspAss2/");
 
 
@@ -135,6 +140,11 @@ public class ExtractCollations {
                 .withHadoopJarStep(hadoopJarStepFilterCollocations)
                 .withActionOnFailure("TERMINATE_JOB_FLOW");
 
+        StepConfig stepConfig7 = new StepConfig()
+                .withName("stepConfig7")
+                .withHadoopJarStep(hadoopJarStepSortCollocations)
+                .withActionOnFailure("TERMINATE_JOB_FLOW");
+
 
         JobFlowInstancesConfig instances = new JobFlowInstancesConfig()
                 .withInstanceCount(2)
@@ -147,7 +157,7 @@ public class ExtractCollations {
         RunJobFlowRequest runFlowRequest = new RunJobFlowRequest()
                 .withName("DspAss2")
                 .withInstances(instances)
-                .withSteps(stepConfig1,stepConfig2,stepConfig3, stepConfig4, stepConfig5, stepConfig6)
+                .withSteps(stepConfig1,stepConfig2,stepConfig3, stepConfig4, stepConfig5, stepConfig6, stepConfig7)
                 .withLogUri("s3n://dsp-ass2/logs/")
                 .withServiceRole("EMR_DefaultRole")// TODO  params??
                 .withJobFlowRole("EMR_EC2_DefaultRole"); // TODO  params??
