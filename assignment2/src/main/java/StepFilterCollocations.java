@@ -17,7 +17,7 @@ public class StepFilterCollocations {
 
         @Override
         public void map(Text decadeAndBigram, DoubleWritable npmi, Context context) throws IOException, InterruptedException {
-            String decade = decadeAndBigram.toString().split("##")[0];
+            String decade = decadeAndBigram.toString().split(Defs.decadeBigramDelimiter)[0];
             context.write(new Text(decade), npmi);
             context.write(decadeAndBigram, npmi);
         }
@@ -31,7 +31,7 @@ public class StepFilterCollocations {
         public void reduce(Text key, Iterable<DoubleWritable> value, Context context) throws IOException,  InterruptedException {
             double minPmi = Double.parseDouble(context.getConfiguration().get("minPmi","1"));
             double relMinPmi = Double.parseDouble(context.getConfiguration().get("relMinPmi","1"));
-            if(!key.toString().contains("##")){
+            if(!key.toString().contains(Defs.decadeBigramDelimiter)){
                 decadeTotalNpmi = 0;
                 for(DoubleWritable val : value) {
                     decadeTotalNpmi += val.get();
@@ -51,7 +51,7 @@ public class StepFilterCollocations {
     public static class PartitionerClass extends Partitioner<Text, LongWritable> {
         @Override
         public int getPartition(Text key, LongWritable value, int numPartitions) {
-            String decade = key.toString().split("##")[0];
+            String decade = key.toString().split(Defs.decadeBigramDelimiter)[0];
             return decade.hashCode() % numPartitions;
         }
     }

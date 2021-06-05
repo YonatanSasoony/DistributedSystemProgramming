@@ -16,7 +16,7 @@ public class StepCalcN {
 
         @Override
         public void map(Text decadeAndBigram, LongWritable occurrences, Context context) throws IOException, InterruptedException {
-            String[] values = decadeAndBigram.toString().split("##");
+            String[] values = decadeAndBigram.toString().split(Defs.decadeBigramDelimiter);
             String decade = values[0];
             String bigram = values[1];
             context.write(new Text(decade), occurrences);
@@ -29,13 +29,13 @@ public class StepCalcN {
         @Override
         // < decade##bigram , 0> Or <decade, occ>
         public void reduce(Text key, Iterable<LongWritable> value, Context context) throws IOException,  InterruptedException {
-            if(!key.toString().contains("##")){
+            if(!key.toString().contains(Defs.decadeBigramDelimiter)){
                 N = 0;
                 for(LongWritable val : value) {
                     N += val.get();
                 }
             }else{
-                context.write(new Text(key+"@N"), new LongWritable(N));
+                context.write(new Text(key+Defs.tagsDelimiter+"N"), new LongWritable(N));
             }
         }
     }
@@ -43,7 +43,7 @@ public class StepCalcN {
     public static class PartitionerClass extends Partitioner<Text, LongWritable> {
         @Override
         public int getPartition(Text key, LongWritable value, int numPartitions) {
-            String decade = key.toString().split("##")[0];
+            String decade = key.toString().split(Defs.decadeBigramDelimiter)[0];
             return decade.hashCode() % numPartitions;
         }
     }

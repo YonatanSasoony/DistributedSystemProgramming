@@ -31,7 +31,7 @@ public class LineToTextAndDoubleRecordReader extends RecordReader<Text, DoubleWr
     @Override
     public boolean nextKeyValue() throws IOException, InterruptedException {
         if (reader.nextKeyValue()) {
-            String[] toks = reader.getCurrentValue().toString().split("\t");
+            String[] toks = reader.getCurrentValue().toString().split(Defs.lineDataDelimiter);
             key = new Text(toks[0]);
             value = new DoubleWritable(Double.parseDouble(toks[1]));
             return true;

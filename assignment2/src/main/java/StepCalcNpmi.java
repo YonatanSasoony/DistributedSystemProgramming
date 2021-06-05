@@ -20,14 +20,14 @@ public class StepCalcNpmi {
         @Override
         public void map(Text decadeAndBigramAndTag, LongWritable value, Context context) throws IOException, InterruptedException {
             // TODO: name
-            if (!decadeAndBigramAndTag.toString().contains("@")) {// this is Cw1w2
+            if (!decadeAndBigramAndTag.toString().contains(Defs.tagsDelimiter)) {// this is Cw1w2
                 Text decadeAndBigram = new Text(decadeAndBigramAndTag.toString());
-                context.write(decadeAndBigram, new Text(value.toString() + "@Cw1w2"));
+                context.write(decadeAndBigram, new Text(value.toString() + Defs.tagsDelimiter+"Cw1w2"));
             } else {//check tags
-                String[] values = decadeAndBigramAndTag.toString().split("@");
+                String[] values = decadeAndBigramAndTag.toString().split(Defs.tagsDelimiter);
                 Text decadeAndBigram = new Text(values[0]);
                 String tag = values[1];
-                Text valueAndTag = new Text(value.toString() + "@"+tag);
+                Text valueAndTag = new Text(value.toString() + Defs.tagsDelimiter+tag);
                 context.write(decadeAndBigram, valueAndTag);
             }
         }
@@ -39,7 +39,7 @@ public class StepCalcNpmi {
         public void reduce(Text decadeAndBigram, Iterable<Text> valuesAndTags, Context context) throws IOException,  InterruptedException {
             long N = 1, Cw1 = 1, Cw2 = 1, Cw1w2 = 1;
             for(Text valueAndTag : valuesAndTags){
-                String[] values = valueAndTag.toString().split("@");
+                String[] values = valueAndTag.toString().split(Defs.tagsDelimiter);
                 String val = values[0];
                 String tag = values[1];
                 switch (tag){

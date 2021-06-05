@@ -17,9 +17,10 @@ public class StepSortCollocations {
 
         @Override
         public void map(Text decadeAndBigram, DoubleWritable npmi, Context context) throws IOException, InterruptedException {
-            String decade = decadeAndBigram.toString().split("##")[0];
-            String bigram = decadeAndBigram.toString().split("##")[1];
-            context.write(new Text(decade+"<>"+npmi.toString()+"<>"+bigram), npmi);
+            String[] toks = decadeAndBigram.toString().split(Defs.decadeBigramDelimiter);
+            String decade = toks[0];
+            String bigram = toks[1];
+            context.write(new Text(decade+Defs.sortDelimiter+npmi.toString()+Defs.sortDelimiter+bigram), npmi);
         }
     }
 
@@ -29,7 +30,7 @@ public class StepSortCollocations {
         @Override
         //  <decade<>npmi<>bigram , npmi>
         public void reduce(Text decadeNpmiAndBigram, Iterable<DoubleWritable> value, Context context) throws IOException,  InterruptedException {
-            String[] toks = decadeNpmiAndBigram.toString().split("<>>");
+            String[] toks = decadeNpmiAndBigram.toString().split(Defs.sortDelimiter);
             String decade = toks[0];
             String npmi = toks[1];
             String bigram = toks[2];
@@ -65,7 +66,7 @@ public class StepSortCollocations {
 //        job.setCombinerClass(ReducerClass.class);
         job.setReducerClass(ReducerClass.class);
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(DoubleWritable.class);
+        job.setOutputValueClass(Text.class);
         job.setInputFormatClass(LineToTextAndDoubleInputFormat.class);
         FileInputFormat.addInputPath(job, new Path(input)); //TODO - replace with args[0] IN ALL THE CODE BASE
         FileOutputFormat.setOutputPath(job, new Path(output));

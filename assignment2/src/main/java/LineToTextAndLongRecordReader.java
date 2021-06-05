@@ -32,7 +32,7 @@ public class LineToTextAndLongRecordReader extends RecordReader<Text, LongWritab
     @Override
     public boolean nextKeyValue() throws IOException, InterruptedException {
         if (reader.nextKeyValue()) {
-            String[] toks = reader.getCurrentValue().toString().split("\t");
+            String[] toks = reader.getCurrentValue().toString().split(Defs.lineDataDelimiter);
             key = new Text(toks[0]);
             value = new LongWritable(Long.parseLong(toks[1]));
             return true;
