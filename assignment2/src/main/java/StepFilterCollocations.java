@@ -23,9 +23,29 @@ public class StepFilterCollocations {
         }
     }
 
-    public static class ReducerClass extends Reducer<Text,DoubleWritable,Text,DoubleWritable> {
-        private static double decadeTotalNpmi  = 0;
+    public static class CombinerClass extends Reducer<Text,DoubleWritable,Text,DoubleWritable> {
 
+        @Override
+        // <decade, npmi1....npmiK> Or <decade##W1W2 , npmi>
+        public void reduce(Text key, Iterable<DoubleWritable> npmis, Context context) throws IOException,  InterruptedException {
+            double decadeTotalNpmi = 0;
+            for(DoubleWritable npmi : npmis) {
+                decadeTotalNpmi += npmi.get();
+            }
+            context.write(key, new DoubleWritable(decadeTotalNpmi));
+        }
+    }
+
+    public static class ReducerClass extends Reducer<Text,DoubleWritable,Text,DoubleWritable> {
+        private static double decadeTotalNpmi;
+
+        @Override
+        protected void setup(Context context) throws IOException, InterruptedException {
+            decadeTotalNpmi = 0;
+        }
+
+        //we did not implemented a Combiner class this time, because we cannot promise that the mapper or the combiner
+        //will receive all the relevant information/params for calculating the npmi
         @Override
         // <decade, npmi1....npmiK> Or <decade##W1W2 , npmi>
         public void reduce(Text key, Iterable<DoubleWritable> value, Context context) throws IOException,  InterruptedException {
@@ -63,17 +83,18 @@ public class StepFilterCollocations {
         Configuration conf = new Configuration();
         conf.set("minPmi", "0.1"); // TODO replace with args[0] [1]
         conf.set("relMinPmi", "0.1");
+
         Job job = Job.getInstance(conf, "filter collocations");
         job.setJarByClass(StepFilterCollocations.class);
+        job.setInputFormatClass(LineToTextAndDoubleInputFormat.class);
         job.setMapperClass(MapperClass.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(DoubleWritable.class);
+        job.setCombinerClass(CombinerClass.class);
         job.setPartitionerClass(PartitionerClass.class);
-//        job.setCombinerClass(ReducerClass.class);
         job.setReducerClass(ReducerClass.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(DoubleWritable.class);
-        job.setInputFormatClass(LineToTextAndDoubleInputFormat.class);
         FileInputFormat.addInputPath(job, new Path(input)); //TODO - replace with args[0] IN ALL THE CODE BASE
         FileOutputFormat.setOutputPath(job, new Path(output));
         System.exit(job.waitForCompletion(true) ? 0 : 1);

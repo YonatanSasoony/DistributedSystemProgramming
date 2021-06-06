@@ -1,6 +1,5 @@
 import com.amazonaws.AmazonClientException;
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.*;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.elasticmapreduce.AmazonElasticMapReduce;
 import com.amazonaws.services.elasticmapreduce.AmazonElasticMapReduceClientBuilder;
@@ -39,20 +38,32 @@ public class ExtractCollations {
             return;
         }
 
+        AWSCredentialsProvider credentialsProvider = new AWSStaticCredentialsProvider(new ProfileCredentialsProvider().getCredentials());
+
+
+
+        System.out.println("Creating EMR instance");
+        System.out.println("===========================================");
+        AmazonElasticMapReduce mapReduce = AmazonElasticMapReduceClientBuilder
+                .standard()
+                .withCredentials(credentialsProvider)
+                .withRegion("us-east-1")
+                .build();
+
 //        AWSCredentials credentials = new PropertiesCredentials(...);
 //        AmazonElasticMapReduce mapReduce = new
 //                AmazonElasticMapReduceClientBuilder.defaultClient(;
-        AWSCredentials credentials_profile = null;
-        try {
-            credentials_profile = new ProfileCredentialsProvider("default").getCredentials(); // specifies any named profile in .aws/credentials as the credentials provider
-        } catch (Exception e) {
-            throw new AmazonClientException(
-                    "Cannot load credentials from .aws/credentials file. Make sure that the credentials file exists and that the profile name is defined within it.", e);
-        }
-        AmazonElasticMapReduce mapReduce = AmazonElasticMapReduceClientBuilder.standard()
-                .withCredentials(new AWSStaticCredentialsProvider(credentials_profile))
-                .withRegion(Regions.US_EAST_1)
-                .build();
+//        AWSCredentials credentials_profile = null;
+//        try {
+//            credentials_profile = new ProfileCredentialsProvider("default").getCredentials(); // specifies any named profile in .aws/credentials as the credentials provider
+//        } catch (Exception e) {
+//            throw new AmazonClientException(
+//                    "Cannot load credentials from .aws/credentials file. Make sure that the credentials file exists and that the profile name is defined within it.", e);
+//        }
+//        AmazonElasticMapReduce mapReduce = AmazonElasticMapReduceClientBuilder.standard()
+//                .withCredentials(new AWSStaticCredentialsProvider(credentials_profile))
+//                .withRegion(Regions.US_EAST_1)
+//                .build();
 
         // input: data set
         // output: decade##w1w2 -> occurrences = Cw1w2
@@ -99,7 +110,7 @@ public class ExtractCollations {
         // output: decade##w1w2 -> npmi (filter collocation)
         HadoopJarStepConfig hadoopJarStepFilterCollocations = new HadoopJarStepConfig()
                 .withJar("s3n://dsp-ass2/ExtractCollations.jar") // This should be a full map reduce application.
-                .withMainClass("StepFilterCollocations " + args[0] + " " + args[1])
+                .withMainClass("StepFilterCollocations " + args[0] + " " + args[1]) //TODO; check args
                 .withArgs("s3n://dsp-ass2/outputNpmi/", "s3n://dsp-ass2/outputDspAss2/");
 
         // input: decade##w1w2 -> npmi (filter collocation)
@@ -147,7 +158,7 @@ public class ExtractCollations {
 
 
         JobFlowInstancesConfig instances = new JobFlowInstancesConfig()
-                .withInstanceCount(2)
+                .withInstanceCount(5)
                 .withMasterInstanceType(InstanceType.M4_LARGE.toString())
                 .withSlaveInstanceType(InstanceType.M4_LARGE.toString())
                 .withHadoopVersion("2.6.0").withEc2KeyName("awsKeyPair")
@@ -155,12 +166,12 @@ public class ExtractCollations {
                 .withPlacement(new PlacementType("us-east-1a"));
 
         RunJobFlowRequest runFlowRequest = new RunJobFlowRequest()
-                .withName("DspAss2")
+                .withName("DspAss2") //TODO: if not working- put ec2 key name
                 .withInstances(instances)
                 .withSteps(stepConfig1,stepConfig2,stepConfig3, stepConfig4, stepConfig5, stepConfig6, stepConfig7)
                 .withLogUri("s3n://dsp-ass2/logs/")
                 .withServiceRole("EMR_DefaultRole")// TODO  params??
-                .withJobFlowRole("EMR_EC2_DefaultRole"); // TODO  params??
+                .withJobFlowRole("EMR_EC2_DefaultRole"); // TODO  params?? .withReleaseLabel("emr-5.11.0");
 
         RunJobFlowResult runJobFlowResult = mapReduce.runJobFlow(runFlowRequest);
         String jobFlowId = runJobFlowResult.getJobFlowId();

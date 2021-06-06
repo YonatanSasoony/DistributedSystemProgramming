@@ -13,19 +13,41 @@ import java.io.IOException;
 public class StepCalcN {
 
     public static class MapperClass extends Mapper<Text, LongWritable, Text, LongWritable> {
+        private static LongWritable zero;
 
         @Override
+        protected void setup(Context context) throws IOException, InterruptedException {
+            zero = new LongWritable(0);
+        }
+        @Override
         public void map(Text decadeAndBigram, LongWritable occurrences, Context context) throws IOException, InterruptedException {
-            String[] values = decadeAndBigram.toString().split(Defs.decadeBigramDelimiter);
-            String decade = values[0];
-            String bigram = values[1];
+            String decade = decadeAndBigram.toString().split(Defs.decadeBigramDelimiter)[0];
             context.write(new Text(decade), occurrences);
-            context.write(decadeAndBigram, new LongWritable(0));
+            context.write(decadeAndBigram, zero);
+        }
+    }
+
+    public static class CombinerClass extends Reducer<Text,LongWritable,Text,LongWritable> {
+
+        @Override
+        // < decade##bigram , 0> Or <decade, occ>
+        public void reduce(Text key, Iterable<LongWritable> value, Context context) throws IOException,  InterruptedException {
+            long N = 0;
+            for(LongWritable val : value) {
+                N += val.get();
+            }
+            context.write(key, new LongWritable(N));
         }
     }
 
     public static class ReducerClass extends Reducer<Text,LongWritable,Text,LongWritable> {
-        private long N = 0;
+        private long N;
+
+        @Override
+        protected void setup(Context context) throws IOException, InterruptedException {
+            N = 0;
+        }
+
         @Override
         // < decade##bigram , 0> Or <decade, occ>
         public void reduce(Text key, Iterable<LongWritable> value, Context context) throws IOException,  InterruptedException {
@@ -52,17 +74,19 @@ public class StepCalcN {
         String input = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\Cw1w2_output\\part-r-00000";
         String output = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\N_output";
         Configuration conf = new Configuration();
+
         Job job = Job.getInstance(conf, "calc N");
         job.setJarByClass(StepCalcN.class);
+        job.setInputFormatClass(LineToTextAndLongInputFormat.class);
         job.setMapperClass(MapperClass.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(LongWritable.class);
+        job.setCombinerClass(CombinerClass.class);
         job.setPartitionerClass(PartitionerClass.class);
-//        job.setCombinerClass(ReducerClass.class); //TODO combiner?
         job.setReducerClass(ReducerClass.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(LongWritable.class);
-        job.setInputFormatClass(LineToTextAndLongInputFormat.class);
+
         FileInputFormat.addInputPath(job, new Path(input));
         FileOutputFormat.setOutputPath(job, new Path(output));
         System.exit(job.waitForCompletion(true) ? 0 : 1);

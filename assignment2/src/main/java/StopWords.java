@@ -1,19 +1,28 @@
 import java.util.Collections;
 import java.util.HashSet;
 
-public class StopWordsSet {
-    private static StopWordsSet stopWords = null;
+public class StopWords {
+    private static StopWords stopWords = null;
     private HashSet<String> set;
 
-    private StopWordsSet(){
+    private StopWords(){
         set = new HashSet<>();
         fillSet();
     }
 
-    public static StopWordsSet getInstance(){
+    public static StopWords getInstance(){
         if(stopWords == null)
-            stopWords = new StopWordsSet();
+            stopWords = new StopWords();
         return stopWords;
+    }
+
+    public boolean contains(String[] words) {
+        for (String word : words) {
+            if (contains(word)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean contains(String word){

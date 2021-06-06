@@ -17,13 +17,17 @@ public class StepCalcNpmi {
 
     public static class MapperClass extends Mapper<Text, LongWritable, Text, Text> {
 
+        private boolean isCw1w2Tag(Text key) {
+            return !key.toString().contains(Defs.tagsDelimiter);
+        }
+
         @Override
         public void map(Text decadeAndBigramAndTag, LongWritable value, Context context) throws IOException, InterruptedException {
-            // TODO: name
-            if (!decadeAndBigramAndTag.toString().contains(Defs.tagsDelimiter)) {// this is Cw1w2
+
+            if (isCw1w2Tag(decadeAndBigramAndTag)) {
                 Text decadeAndBigram = new Text(decadeAndBigramAndTag.toString());
                 context.write(decadeAndBigram, new Text(value.toString() + Defs.tagsDelimiter+"Cw1w2"));
-            } else {//check tags
+            } else {
                 String[] values = decadeAndBigramAndTag.toString().split(Defs.tagsDelimiter);
                 Text decadeAndBigram = new Text(values[0]);
                 String tag = values[1];
@@ -80,17 +84,18 @@ public class StepCalcNpmi {
         String output = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\Npmi_output";
 
         Configuration conf = new Configuration();
+
         Job job = Job.getInstance(conf, "calc npmi");
         job.setJarByClass(StepCalcNpmi.class);
+        job.setInputFormatClass(LineToTextAndLongInputFormat.class);
         job.setMapperClass(MapperClass.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(Text.class);
         job.setPartitionerClass(PartitionerClass.class);
-//        job.setCombinerClass(ReducerClass.class);
         job.setReducerClass(ReducerClass.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(DoubleWritable.class);
-        job.setInputFormatClass(LineToTextAndLongInputFormat.class);
+
         FileInputFormat.addInputPath(job, new Path(input1));
         FileInputFormat.addInputPath(job, new Path(input2));
         FileInputFormat.addInputPath(job, new Path(input3));

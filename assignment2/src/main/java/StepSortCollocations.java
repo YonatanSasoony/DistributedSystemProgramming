@@ -25,7 +25,12 @@ public class StepSortCollocations {
     }
 
     public static class ReducerClass extends Reducer<Text,DoubleWritable,Text,Text> {
-        private static String prevDecade  = "-1";
+        private static String prevDecade;
+
+        @Override
+        protected void setup(Context context) throws IOException, InterruptedException {
+            prevDecade = "-1";
+        }
 
         @Override
         //  <decade<>npmi<>bigram , npmi>
@@ -43,12 +48,13 @@ public class StepSortCollocations {
         }
     }
 
-    public static class PartitionerClass extends Partitioner<Text, LongWritable> {
-        @Override
-        public int getPartition(Text key, LongWritable value, int numPartitions) {
-            return 0;
-        }
-    }
+    // We set the number of reducer tasks to 1, no need a partitioner.
+//    public static class PartitionerClass extends Partitioner<Text, LongWritable> {
+//        @Override
+//        public int getPartition(Text key, LongWritable value, int numPartitions) {
+//            return 0;
+//        }
+//    }
 
     public static void main(String[] args) throws Exception {
         String input = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\Filtered_output\\part-r-00000";
@@ -57,17 +63,19 @@ public class StepSortCollocations {
         Configuration conf = new Configuration();
         conf.set("minPmi", "0.1"); // TODO replace with args[0] [1]
         conf.set("relMinPmi", "0.1");
+
         Job job = Job.getInstance(conf, "sort collocations");
         job.setJarByClass(StepSortCollocations.class);
+        job.setInputFormatClass(LineToTextAndDoubleInputFormat.class);
         job.setMapperClass(MapperClass.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(DoubleWritable.class);
-        job.setPartitionerClass(PartitionerClass.class);
-//        job.setCombinerClass(ReducerClass.class);
+//        job.setPartitionerClass(PartitionerClass.class); // no need
         job.setReducerClass(ReducerClass.class);
+        job.setNumReduceTasks(1);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
-        job.setInputFormatClass(LineToTextAndDoubleInputFormat.class);
+
         FileInputFormat.addInputPath(job, new Path(input)); //TODO - replace with args[0] IN ALL THE CODE BASE
         FileOutputFormat.setOutputPath(job, new Path(output));
         System.exit(job.waitForCompletion(true) ? 0 : 1);
