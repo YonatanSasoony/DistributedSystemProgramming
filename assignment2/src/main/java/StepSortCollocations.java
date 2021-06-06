@@ -57,8 +57,11 @@ public class StepSortCollocations {
 //    }
 
     public static void main(String[] args) throws Exception {
-        String input = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\Filtered_output\\part-r-00000";
-        String output = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\Sorted_output";
+//        String input = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\Filtered_output\\part-r-00000";
+//        String output = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\Sorted_output";
+
+        String input = args[0];
+        String output = args[1];
 
         Configuration conf = new Configuration();
         conf.set("minPmi", "0.1"); // TODO replace with args[0] [1]

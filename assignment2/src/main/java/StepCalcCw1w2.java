@@ -21,26 +21,15 @@ public class StepCalcCw1w2 {
         private static StopWords stopWords = StopWords.getInstance();
         @Override
         public void map(LongWritable lineId, Text line, Context context) throws IOException,  InterruptedException {
-            try {
-                System.out.println("lineID:" + lineId);
-                System.out.println("line:" + line);
-            }catch (Exception e){
-                System.out.println("EXCEPTION"+e);
-            }
-//            String[] lineData = line.toString().split(Defs.lineDataDelimiter);
-//            try{
-//                String bigram = lineData[0];
-//                Integer year = Integer.parseInt(lineData[1]);
-//                Integer occurrences  = Integer.parseInt(lineData[2]);
-//                String decade = Integer.toString(year/10);
-//                Text decadeAndBigram = new Text(decade + Defs.decadeBigramDelimiter + bigram);
-//                String[] words = bigram.split(Defs.internalBigramDelimiter);
-//                if(!stopWords.contains(words))
-//                    context.write(decadeAndBigram, new LongWritable(occurrences));
-//            }catch (Exception e){
-//                System.out.println("EXCEPTION"+e);
-//                return;
-//            }
+        String[] lineData = line.toString().split(Defs.lineDataDelimiter);
+            String bigram = lineData[0];
+            Integer year = Integer.parseInt(lineData[1]);
+            Integer occurrences  = Integer.parseInt(lineData[2]);
+            String decade = Integer.toString(year/10);
+            Text decadeAndBigram = new Text(decade + Defs.decadeBigramDelimiter + bigram);
+            String[] words = bigram.split(Defs.internalBigramDelimiter);
+            if(!stopWords.contains(words))
+                context.write(decadeAndBigram, new LongWritable(occurrences));
         }
     }
 
@@ -64,12 +53,16 @@ public class StepCalcCw1w2 {
 
     public static void main(String[] args) throws Exception {
 //        String input = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\bigrams.txt";
-        String input = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\heb-2gram";
-        String output = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\Cw1w2_output";
+//        String input = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\heb-2gram";
+//        String output = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\Cw1w2_output";
+
+        String input = args[0];
+        String output = args[1];
 
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "calc Cw1w2");
         job.setJarByClass(StepCalcCw1w2.class);
+        job.setInputFormatClass(SequenceFileInputFormat.class); //TODO turn on when using full data set
         job.setMapperClass(MapperClass.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(LongWritable.class);
@@ -78,11 +71,9 @@ public class StepCalcCw1w2 {
         job.setReducerClass(ReducerClass.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(LongWritable.class);
-        job.setInputFormatClass(SequenceFileInputFormat.class); //TODO turn on when using full data set
-//        job.setInputFormatClass(TextInputFormat.class); //TODO ?
+
         FileInputFormat.addInputPath(job, new Path(input));
         FileOutputFormat.setOutputPath(job, new Path(output));
-
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
 
