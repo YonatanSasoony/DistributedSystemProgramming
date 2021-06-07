@@ -1,8 +1,10 @@
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.regex.Pattern;
 
 public class StopWords {
     private static StopWords stopWords = null;
+    private static Pattern hebrewPattern = Pattern.compile("^[\"א-ת']*$");
     private HashSet<String> set;
 
     private StopWords(){
@@ -25,8 +27,12 @@ public class StopWords {
         return false;
     }
 
+    private boolean legal(String word) {
+        return  word.length() > 1 && hebrewPattern.matcher(word).find();
+    }
+
     public boolean contains(String word){
-        return this.set.contains(word);
+        return !legal(word) || this.set.contains(word);
     }
 
     private void fillSet() {
@@ -108,6 +114,14 @@ public class StopWords {
                 ";\n" +
                 ":\n" +
                 "1\n" +
+                "2\n" +
+                "3\n" +
+                "4\n" +
+                "5\n" +
+                "6\n" +
+                "7\n" +
+                "8\n" +
+                "9\n" +
                 ".\n" +
                 "-\n" +
                 "*\n" +

@@ -57,15 +57,11 @@ public class StepSortCollocations {
 //    }
 
     public static void main(String[] args) throws Exception {
-//        String input = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\Filtered_output\\part-r-00000";
-//        String output = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\Sorted_output";
-
+        System.out.println("Hello StepCalcSort main");
         String input = args[0];
         String output = args[1];
 
         Configuration conf = new Configuration();
-        conf.set("minPmi", "0.1"); // TODO replace with args[0] [1]
-        conf.set("relMinPmi", "0.1");
 
         Job job = Job.getInstance(conf, "sort collocations");
         job.setJarByClass(StepSortCollocations.class);
@@ -79,7 +75,7 @@ public class StepSortCollocations {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
 
-        FileInputFormat.addInputPath(job, new Path(input)); //TODO - replace with args[0] IN ALL THE CODE BASE
+        FileInputFormat.addInputPath(job, new Path(input));
         FileOutputFormat.setOutputPath(job, new Path(output));
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }

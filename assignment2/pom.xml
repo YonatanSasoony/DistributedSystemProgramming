@@ -11,6 +11,7 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencyManagement>
@@ -33,7 +34,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>ExtractCollations</mainClass>
+                            <mainClass>StepsRunner</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -109,6 +110,12 @@
             <version>3.2.2</version>
         </dependency>
 
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/hadoop-lzo/hadoop-lzo &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>hadoop-lzo</groupId>-->
+<!--            <artifactId>hadoop-lzo</artifactId>-->
+<!--            <version>0.4.15</version>-->
+<!--        </dependency>-->
 
 
     </dependencies>

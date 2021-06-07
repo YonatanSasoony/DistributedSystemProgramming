@@ -77,15 +77,13 @@ public class StepFilterCollocations {
     }
 
     public static void main(String[] args) throws Exception {
-//        String input = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\Npmi_output\\part-r-00000";
-//        String output = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\Filtered_output";
-
+        System.out.println("Hello StepCalcFilter main");
         String input = args[0];
         String output = args[1];
 
         Configuration conf = new Configuration();
-        conf.set("minPmi", "0.1"); // TODO replace with args[0] [1]
-        conf.set("relMinPmi", "0.1");
+        conf.set("minPmi", args[2]);
+        conf.set("relMinPmi", args[3]);
 
         Job job = Job.getInstance(conf, "filter collocations");
         job.setJarByClass(StepFilterCollocations.class);
@@ -98,7 +96,8 @@ public class StepFilterCollocations {
         job.setReducerClass(ReducerClass.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(DoubleWritable.class);
-        FileInputFormat.addInputPath(job, new Path(input)); //TODO - replace with args[0] IN ALL THE CODE BASE
+
+        FileInputFormat.addInputPath(job, new Path(input));
         FileOutputFormat.setOutputPath(job, new Path(output));
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }

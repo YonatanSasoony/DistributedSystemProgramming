@@ -27,10 +27,16 @@ public class StepCalcCw2 {
             String bigram = values[1];
             String[] words = bigram.split(Defs.internalBigramDelimiter);
             String w1 = words[0];
-            String w2 = words[1];
-            context.write(new Text(decade + Defs.decadeBigramDelimiter + w2), occurrences);
-            String decadeAndReverseBigram = decade + Defs.decadeBigramDelimiter + w2 + Defs.internalBigramDelimiter + w1;
-            context.write(new Text(decadeAndReverseBigram), zero);
+            try {
+                String w2 = words[1];
+                context.write(new Text(decade + Defs.decadeBigramDelimiter + w2), occurrences);
+                String decadeAndReverseBigram = decade + Defs.decadeBigramDelimiter + w2 + Defs.internalBigramDelimiter + w1;
+                context.write(new Text(decadeAndReverseBigram), zero);
+            } catch (Exception e) {
+                System.err.println("EXCEPTION: "+e);
+                System.err.println(decadeAndBigram);
+                System.err.println(words);
+            }
         }
     }
 
@@ -84,9 +90,7 @@ public class StepCalcCw2 {
     }
 
     public static void main(String[] args) throws Exception {
-//        String input = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\Cw1w2_output\\part-r-00000";
-//        String output = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\Cw2_output";
-
+        System.out.println("Hello StepCalcCw2 main");
         String input = args[0];
         String output = args[1];
 

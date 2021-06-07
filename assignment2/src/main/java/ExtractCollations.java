@@ -1,49 +1,37 @@
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.auth.*;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.PropertiesCredentials;
 import com.amazonaws.services.elasticmapreduce.*;
 import com.amazonaws.services.elasticmapreduce.model.*;
-import com.amazonaws.services.elasticmapreduce.util.StepFactory;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.elasticmapreduce.AmazonElasticMapReduce;
-import com.amazonaws.services.elasticmapreduce.AmazonElasticMapReduceClientBuilder;
-import com.amazonaws.services.elasticmapreduce.model.Application;
-import com.amazonaws.services.elasticmapreduce.model.ComputeLimits;
-import com.amazonaws.services.elasticmapreduce.model.ComputeLimitsUnitType;
-import com.amazonaws.services.elasticmapreduce.model.InstanceGroupConfig;
 import com.amazonaws.services.elasticmapreduce.model.JobFlowInstancesConfig;
-import com.amazonaws.services.elasticmapreduce.model.ManagedScalingPolicy;
 import com.amazonaws.services.elasticmapreduce.model.RunJobFlowRequest;
 import com.amazonaws.services.elasticmapreduce.model.RunJobFlowResult;
 import org.apache.log4j.BasicConfigurator;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
 import software.amazon.awssdk.services.ec2.model.*;
-import software.amazon.awssdk.services.ec2.model.Tag;
-
 
 public class ExtractCollations {
     public static void main(String[] args) {
         System.out.println("Hello ExtractCollations main");//TODO remove
+        for (String arg: args) {
+            System.out.println("arg:" + arg);
+        }
         if(args == null || args.length != 2) {
             System.out.println("invalid input usage: java -cp ass2.jar ExtractCollations <minPmi> <relMinPmi>");
-            System.out.println("args0:"+args[0]);
             return;
         }
 // izhak's
-//        AWSCredentialsProvider credentialsProvider = new AWSStaticCredentialsProvider(new ProfileCredentialsProvider().getCredentials());
-//        AmazonElasticMapReduce mapReduce = AmazonElasticMapReduceClientBuilder
+//        AWSCredentialsProvider cred = new AWS
+//        mapReduce = AmazonElasticMapReduceClientBuilder
 //                .standard()
 //                .withCredentials(credentialsProvider)
 //                .withRegion("us-east-1")
-//                .build();
+//                .build();0545559921
 
 // yonatan's
         BasicConfigurator.configure();
@@ -95,7 +83,7 @@ public class ExtractCollations {
         HadoopJarStepConfig hadoopJarStepFilterCollocations = new HadoopJarStepConfig()
                 .withJar("s3n://dsp-ass2/ExtractCollations.jar") // This should be a full map reduce application.
                 .withMainClass("StepFilterCollocations") //TODO; check args
-                .withArgs(args[0], args[1], "s3n://dsp-ass2/Npmi_output/part-r-00000", "s3n://dsp-ass2/Filtered_output/");
+                .withArgs("s3n://dsp-ass2/Npmi_output/part-r-00000", "s3n://dsp-ass2/Filtered_output/", args[0], args[1]);
 
         // input: decade##w1w2 -> npmi (filter collocation)
         // output: decade##w1w2 -> npmi (sorted collocation)
@@ -106,40 +94,50 @@ public class ExtractCollations {
 
 
         StepConfig stepConfig1 = new StepConfig()
-                .withName("stepConfig1")
+                .withName("StepCalcCw1w2")
                 .withHadoopJarStep(hadoopJarStepCalcCw1Cw2)
                 .withActionOnFailure("TERMINATE_JOB_FLOW");
 
         StepConfig stepConfig2 = new StepConfig()
-                .withName("stepConfig2")
+                .withName("StepCalcN")
                 .withHadoopJarStep(hadoopJarStepCalcN)
                 .withActionOnFailure("TERMINATE_JOB_FLOW");
 
         StepConfig stepConfig3 = new StepConfig()
-                .withName("stepConfig3")
+                .withName("StepCalcCw1")
                 .withHadoopJarStep(hadoopJarStepCalcCw1)
                 .withActionOnFailure("TERMINATE_JOB_FLOW");
 
         StepConfig stepConfig4 = new StepConfig()
-                .withName("stepConfig4")
+                .withName("StepCalcCw2")
                 .withHadoopJarStep(hadoopJarStepCalcCw2)
                 .withActionOnFailure("TERMINATE_JOB_FLOW");
 
         StepConfig stepConfig5 = new StepConfig()
-                .withName("stepConfig5")
+                .withName("StepCalcNpmi")
                 .withHadoopJarStep(hadoopJarStepCalcNpmi)
                 .withActionOnFailure("TERMINATE_JOB_FLOW");
 
         StepConfig stepConfig6 = new StepConfig()
-                .withName("stepConfig6")
+                .withName("StepFilterCollocations")
                 .withHadoopJarStep(hadoopJarStepFilterCollocations)
                 .withActionOnFailure("TERMINATE_JOB_FLOW");
 
         StepConfig stepConfig7 = new StepConfig()
-                .withName("stepConfig7")
+                .withName("StepSortCollocations")
                 .withHadoopJarStep(hadoopJarStepSortCollocations)
                 .withActionOnFailure("TERMINATE_JOB_FLOW");
 
+
+        HadoopJarStepConfig hadoopJarStepsRunner = new HadoopJarStepConfig() //TODO
+                .withJar("s3n://dsp-ass2/StepsRunner.jar") // This should be a full map reduce application.
+                .withMainClass("StepsRunner")
+                .withArgs(args[0], args[1]);
+
+        StepConfig runStepsConfig = new StepConfig()
+                .withName("StepsRunner")
+                .withHadoopJarStep(hadoopJarStepsRunner)
+                .withActionOnFailure("TERMINATE_JOB_FLOW");
 
         JobFlowInstancesConfig instances = new JobFlowInstancesConfig()
                 .withInstanceCount(2)
@@ -152,7 +150,8 @@ public class ExtractCollations {
         RunJobFlowRequest runFlowRequest = new RunJobFlowRequest()
                 .withName("DspAss2") //TODO: if not working- put ec2 key name
                 .withInstances(instances)
-                .withSteps(stepConfig1,stepConfig2,stepConfig3, stepConfig4, stepConfig5, stepConfig6, stepConfig7)
+                .withSteps(runStepsConfig)
+                //.withSteps(stepConfig1,stepConfig2,stepConfig3, stepConfig4, stepConfig5, stepConfig6, stepConfig7)
                 .withLogUri("s3n://dsp-ass2/logs/")
                 .withServiceRole("EMR_DefaultRole")// TODO  params??
                 .withJobFlowRole("EMR_EC2_DefaultRole") // TODO  params?? .withReleaseLabel("emr-5.11.0");
@@ -167,5 +166,6 @@ public class ExtractCollations {
         // mvn clean compile assembly:single
         // cd target
         // java -cp ExtractCollations-1.0-jar-with-dependencies.jar ExtractCollations 0.5 0.2
+        // java -cp ExtractCollations.jar ExtractCollations 0.5 0.2
     }
 }

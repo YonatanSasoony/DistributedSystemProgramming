@@ -1,6 +1,4 @@
 import java.io.IOException;
-
-import com.hadoop.mapreduce.LzoTextInputFormat;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.Job;
@@ -8,7 +6,6 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
-import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -52,10 +49,7 @@ public class StepCalcCw1w2 {
     }
 
     public static void main(String[] args) throws Exception {
-//        String input = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\bigrams.txt";
-//        String input = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\heb-2gram";
-//        String output = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\Cw1w2_output";
-
+        System.out.println("Hello StepCalcCw1w2 main");
         String input = args[0];
         String output = args[1];
 

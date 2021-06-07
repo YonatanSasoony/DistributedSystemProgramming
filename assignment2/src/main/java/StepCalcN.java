@@ -71,9 +71,7 @@ public class StepCalcN {
     }
 
     public static void main(String[] args) throws Exception {
-//        String input = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\Cw1w2_output\\part-r-00000";
-//        String output = "C:\\Users\\yc132\\OneDrive\\שולחן העבודה\\AWS\\ASS2\\DistributedSystemProgramming\\assignment2\\src\\main\\java\\N_output";
-
+        System.out.println("Hello StepCalcN main");
         String input = args[0];
         String output = args[1];
 
