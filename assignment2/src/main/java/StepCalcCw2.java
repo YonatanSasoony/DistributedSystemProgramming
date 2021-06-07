@@ -27,16 +27,10 @@ public class StepCalcCw2 {
             String bigram = values[1];
             String[] words = bigram.split(Defs.internalBigramDelimiter);
             String w1 = words[0];
-            try {
-                String w2 = words[1];
-                context.write(new Text(decade + Defs.decadeBigramDelimiter + w2), occurrences);
-                String decadeAndReverseBigram = decade + Defs.decadeBigramDelimiter + w2 + Defs.internalBigramDelimiter + w1;
-                context.write(new Text(decadeAndReverseBigram), zero);
-            } catch (Exception e) {
-                System.err.println("EXCEPTION: "+e);
-                System.err.println(decadeAndBigram);
-                System.err.println(words);
-            }
+            String w2 = words[1];
+            context.write(new Text(decade + Defs.decadeBigramDelimiter + w2), occurrences);
+            String decadeAndReverseBigram = decade + Defs.decadeBigramDelimiter + w2 + Defs.internalBigramDelimiter + w1;
+            context.write(new Text(decadeAndReverseBigram), zero);
         }
     }
 

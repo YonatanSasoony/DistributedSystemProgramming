@@ -8,8 +8,6 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-import java.io.IOException;
-
 public class StepsRunner {
 
 
@@ -19,7 +17,7 @@ public class StepsRunner {
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "calc Cw1w2");
         job.setJarByClass(StepCalcCw1w2.class);
-        job.setInputFormatClass(SequenceFileInputFormat.class); //TODO turn on when using full data set
+        job.setInputFormatClass(SequenceFileInputFormat.class);
         job.setMapperClass(StepCalcCw1w2.MapperClass.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(LongWritable.class);
@@ -156,13 +154,15 @@ public class StepsRunner {
         Configuration conf = new Configuration();
 
         Job job = Job.getInstance(conf, "sort collocations");
-        job.setJarByClass(StepSortCollocations.class);
+        job.setJarByClass(StepSortCollocationsDescending.class);
         job.setInputFormatClass(LineToTextAndDoubleInputFormat.class);
-        job.setMapperClass(StepSortCollocations.MapperClass.class);
-        job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(DoubleWritable.class);
+        job.setMapperClass(StepSortCollocationsDescending.MapperClass.class);
+//        job.setMapOutputKeyClass(Text.class); // for ascending sort
+//        job.setMapOutputValueClass(DoubleWritable.class);// for ascending sort
+        job.setMapOutputKeyClass(DoubleWritable.class); // for descending sort
+        job.setMapOutputValueClass(Text.class);// for descending sort
 //        job.setPartitionerClass(PartitionerClass.class); // no need
-        job.setReducerClass(StepSortCollocations.ReducerClass.class);
+        job.setReducerClass(StepSortCollocationsDescending.ReducerClass.class);
         job.setNumReduceTasks(1);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);

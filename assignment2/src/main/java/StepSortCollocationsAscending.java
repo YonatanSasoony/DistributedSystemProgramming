@@ -1,17 +1,15 @@
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Partitioner;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import java.io.IOException;
 
-public class StepSortCollocations {
+public class StepSortCollocationsAscending {
 
     public static class MapperClass extends Mapper<Text, DoubleWritable, Text, DoubleWritable> {
 
@@ -23,6 +21,7 @@ public class StepSortCollocations {
             context.write(new Text(decade+Defs.sortDelimiter+npmi.toString()+Defs.sortDelimiter+bigram), npmi);
         }
     }
+
 
     public static class ReducerClass extends Reducer<Text,DoubleWritable,Text,Text> {
         private static String prevDecade;
@@ -64,7 +63,7 @@ public class StepSortCollocations {
         Configuration conf = new Configuration();
 
         Job job = Job.getInstance(conf, "sort collocations");
-        job.setJarByClass(StepSortCollocations.class);
+        job.setJarByClass(StepSortCollocationsAscending.class);
         job.setInputFormatClass(LineToTextAndDoubleInputFormat.class);
         job.setMapperClass(MapperClass.class);
         job.setMapOutputKeyClass(Text.class);

@@ -25,7 +25,7 @@ public class StepCalcCw1w2 {
             String decade = Integer.toString(year/10);
             Text decadeAndBigram = new Text(decade + Defs.decadeBigramDelimiter + bigram);
             String[] words = bigram.split(Defs.internalBigramDelimiter);
-            if(!stopWords.contains(words))
+            if(words.length == 2 && !stopWords.contains(words))
                 context.write(decadeAndBigram, new LongWritable(occurrences));
         }
     }
