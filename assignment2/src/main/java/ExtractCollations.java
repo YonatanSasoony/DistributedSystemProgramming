@@ -148,13 +148,13 @@ public class ExtractCollations {
                 .withPlacement(new PlacementType("us-east-1a"));
 
         RunJobFlowRequest runFlowRequest = new RunJobFlowRequest()
-                .withName("DspAss2") //TODO: if not working- put ec2 key name
+                .withName("DspAss2")
                 .withInstances(instances)
                 .withSteps(runStepsConfig)
                 //.withSteps(stepConfig1,stepConfig2,stepConfig3, stepConfig4, stepConfig5, stepConfig6, stepConfig7)
-                .withLogUri("s3n://dsp-ass2/logs/")
-                .withServiceRole("EMR_DefaultRole")// TODO  params??
-                .withJobFlowRole("EMR_EC2_DefaultRole") // TODO  params?? .withReleaseLabel("emr-5.11.0");
+                .withLogUri("s3n://dsp-ass2/logs")
+                .withServiceRole("EMR_DefaultRole")
+                .withJobFlowRole("EMR_EC2_DefaultRole")
                 .withReleaseLabel("emr-6.2.0");
 
         RunJobFlowResult runJobFlowResult = mapReduce.runJobFlow(runFlowRequest);

@@ -26,21 +26,22 @@ public class StepSortCollocationsDescending {
 
 
     public static class ReducerClass extends Reducer<DoubleWritable,Text,Text,Text> {
-        private static Double prevDecade;
+        private static int prevDecade;
 
         @Override
         protected void setup(Context context) throws IOException, InterruptedException {
-            prevDecade = -1.0;
+            prevDecade = -1;
         }
 
         @Override
-        //  <decade<>npmi<>bigram , npmi>
+        //  < -(decade * 1000) + npmi), bigram>
         public void reduce(DoubleWritable negativeDecadeAndNpmi, Iterable<Text> bigrams, Context context) throws IOException,  InterruptedException {
 
-            Double decade = negativeDecadeAndNpmi.get() / (-1000.0);
-            Double npmi = negativeDecadeAndNpmi.get() - decade;
+            double positiveDecadeAndNpmi = negativeDecadeAndNpmi.get() *(-1);
+            int decade =   ((int)positiveDecadeAndNpmi) / 1000;
+            Double npmi = positiveDecadeAndNpmi - (decade * 1000);
 
-            if (!decade.equals(prevDecade)) { // split by decades and print titles
+            if (decade !=prevDecade) { // split by decades and print titles
                 prevDecade = decade;
                 context.write(new Text(""), new Text(""));
                 context.write(new Text("Decade:"), new Text(decade+"0s"));
