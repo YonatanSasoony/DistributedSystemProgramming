@@ -22,13 +22,18 @@ public class StepCalcNpmi {
         }
 
         @Override
-        public void map(Text decadeAndBigramAndTag, LongWritable value, Context context) throws IOException, InterruptedException {
-
-            if (isCw1w2Tag(decadeAndBigramAndTag)) {
-                Text decadeAndBigram = new Text(decadeAndBigramAndTag.toString());
+        public void map(Text key, LongWritable value, Context context) throws IOException, InterruptedException {
+            if (key.toString().contains(Defs.NTag)) {
+                String N = value.toString();
+                Text decadeAndNTag = key;
+                context.write(decadeAndNTag, new Text(N));
+            }
+            else if (isCw1w2Tag(key)) {
+                Text decadeAndBigram = new Text(key.toString());
                 context.write(decadeAndBigram, new Text(value.toString() + Defs.tagsDelimiter+"Cw1w2"));
             } else {
-                String[] values = decadeAndBigramAndTag.toString().split(Defs.tagsDelimiter);
+                String decadeAndBigramAndTag = key.toString();
+                String[] values = decadeAndBigramAndTag.split(Defs.tagsDelimiter);
                 Text decadeAndBigram = new Text(values[0]);
                 String tag = values[1];
                 Text valueAndTag = new Text(value.toString() + Defs.tagsDelimiter+tag);
@@ -38,18 +43,28 @@ public class StepCalcNpmi {
     }
 
     public static class ReducerClass extends Reducer<Text,Text,Text, DoubleWritable> {
+        private long N;
+
         @Override
-        // <decade##W1W2, [N, Cw1, Cw2, Cw1e2]>
-        public void reduce(Text decadeAndBigram, Iterable<Text> valuesAndTags, Context context) throws IOException,  InterruptedException {
-            long N = 1, Cw1 = 1, Cw2 = 1, Cw1w2 = 1;
-            for(Text valueAndTag : valuesAndTags){
-                String[] values = valueAndTag.toString().split(Defs.tagsDelimiter);
-                String val = values[0];
-                String tag = values[1];
+        protected void setup(Context context) throws IOException, InterruptedException {
+            N = 0;
+        }
+
+        @Override
+        // <decade#N, N> or <decade##W1W2, [Cw1, Cw2, Cw1w2]>
+        public void reduce(Text key, Iterable<Text> values, Context context) throws IOException,  InterruptedException {
+            if (key.toString().contains(Defs.NTag)) { // <decade#N, N>
+                N = Long.parseLong(values.iterator().next().toString());
+                return;
+            }
+            // <decade##W1W2, [Cw1, Cw2, Cw1w2]>
+            Text decadeAndBigram = key;
+            long Cw1 = 1, Cw2 = 1, Cw1w2 = 1;
+            for(Text valueAndTag : values){
+                String[] toks = valueAndTag.toString().split(Defs.tagsDelimiter);
+                String val = toks[0];
+                String tag = toks[1];
                 switch (tag){
-                    case "N":
-                        N = Long.parseLong(val);
-                        break;
                     case "Cw1":
                         Cw1 = Long.parseLong(val);
                         break;
@@ -59,7 +74,6 @@ public class StepCalcNpmi {
                     case "Cw1w2":
                         Cw1w2 = Long.parseLong(val);
                         break;
-
                 }
             }
             double pmiW1W2 = Math.log(Cw1w2) + Math.log(N) - Math.log(Cw1) - Math.log(Cw2);
@@ -72,7 +86,15 @@ public class StepCalcNpmi {
     public static class PartitionerClass extends Partitioner<Text, Text> {
         @Override
         public int getPartition(Text key, Text value, int numPartitions) {
-            return key.hashCode() % numPartitions;
+            String decade;
+            if (key.toString().contains(Defs.NTag)) {
+                String decadeAndNTag  = key.toString();
+                decade = decadeAndNTag.split(Defs.NTag)[0];
+            }else {
+                String decadeAndBigram  = key.toString();
+                decade = decadeAndBigram.split(Defs.decadeBigramDelimiter)[0];
+            }
+            return decade.hashCode() % numPartitions;
         }
     }
 

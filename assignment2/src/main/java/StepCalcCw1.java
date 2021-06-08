@@ -22,7 +22,11 @@ public class StepCalcCw1 {
         }
 
         @Override
-        public void map(Text decadeAndBigram, LongWritable occurrences, Context context) throws IOException, InterruptedException {
+        public void map(Text key, LongWritable occurrences, Context context) throws IOException, InterruptedException {
+            if (key.toString().contains(Defs.NTag)) { // <decade#N, N>
+                return;
+            }
+            Text decadeAndBigram = key;
             String[] values = decadeAndBigram.toString().split(Defs.decadeBigramDelimiter);
             String decade = values[0];
             String bigram = values[1];

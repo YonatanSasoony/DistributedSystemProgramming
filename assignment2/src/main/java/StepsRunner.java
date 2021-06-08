@@ -76,29 +76,7 @@ public class StepsRunner {
         return job.waitForCompletion(true);
     }
 
-    private static boolean runStepCalcN(String input, String output) throws Exception {
-        System.out.println("Hello StepCalcN main");
-
-        Configuration conf = new Configuration();
-
-        Job job = Job.getInstance(conf, "calc N");
-        job.setJarByClass(StepCalcN.class);
-        job.setInputFormatClass(LineToTextAndLongInputFormat.class);
-        job.setMapperClass(StepCalcN.MapperClass.class);
-        job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(LongWritable.class);
-        job.setCombinerClass(StepCalcN.CombinerClass.class);
-        job.setPartitionerClass(StepCalcN.PartitionerClass.class);
-        job.setReducerClass(StepCalcN.ReducerClass.class);
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(LongWritable.class);
-
-        FileInputFormat.addInputPath(job, new Path(input));
-        FileOutputFormat.setOutputPath(job, new Path(output));
-        return job.waitForCompletion(true);
-    }
-
-    private static boolean runStepCalcNpmi(String input1, String input2, String input3, String input4,
+    private static boolean runStepCalcNpmi(String input1, String input2, String input3,
                                            String output) throws Exception {
         System.out.println("Hello StepCalcNpmi main");
 
@@ -118,7 +96,6 @@ public class StepsRunner {
         FileInputFormat.addInputPath(job, new Path(input1));
         FileInputFormat.addInputPath(job, new Path(input2));
         FileInputFormat.addInputPath(job, new Path(input3));
-        FileInputFormat.addInputPath(job, new Path(input4));
         FileOutputFormat.setOutputPath(job, new Path(output));
         return job.waitForCompletion(true);
     }
@@ -186,48 +163,40 @@ public class StepsRunner {
                 System.exit(1);
             }
 
-            boolean step2 = runStepCalcN("s3n://dsp-ass2/Cw1w2_output/part-r-00000",
-                                        "s3n://dsp-ass2/N_output/");
+            boolean step2 = runStepCalcCw1("s3n://dsp-ass2/Cw1w2_N_output/part-r-00000",
+                                           "s3n://dsp-ass2/Cw1_output");
             if (!step2) {
                 System.out.println("Step 2 failed");
                 System.exit(1);
             }
 
-            boolean step3 = runStepCalcCw1("s3n://dsp-ass2/Cw1w2_output/part-r-00000",
-                                           "s3n://dsp-ass2/Cw1_output");
+            boolean step3 = runStepCalcCw2("s3n://dsp-ass2/Cw1w2_N_output/part-r-00000",
+                                           "s3n://dsp-ass2/Cw2_output/part-r-00000");
             if (!step3) {
                 System.out.println("Step 3 failed");
                 System.exit(1);
             }
 
-            boolean step4 = runStepCalcCw2("s3n://dsp-ass2/Cw1w2_output/part-r-00000",
-                                           "s3n://dsp-ass2/Cw2_output/part-r-00000");
+            boolean step4 = runStepCalcNpmi("s3n://dsp-ass2/Cw1w2_N_output/part-r-00000",
+                                            "s3n://dsp-ass2/Cw1_output/part-r-00000",
+                                            "s3n://dsp-ass2/Cw2_output/part-r-00000",
+                                            "s3n://dsp-ass2/Npmi_output");
             if (!step4) {
                 System.out.println("Step 4 failed");
                 System.exit(1);
             }
 
-            boolean step5 = runStepCalcNpmi("s3n://dsp-ass2/Cw1w2_output/part-r-00000",
-                                            "s3n://dsp-ass2/N_output/part-r-00000",
-                                            "s3n://dsp-ass2/Cw1_output/part-r-00000",
-                                            "s3n://dsp-ass2/Cw2_output/part-r-00000",
-                                            "s3n://dsp-ass2/Npmi_output");
+            boolean step5 = runStepFilterCollocations("s3n://dsp-ass2/Npmi_output/part-r-00000",
+                                                      "s3n://dsp-ass2/Filtered_output", args[1], args[2]);
             if (!step5) {
                 System.out.println("Step 5 failed");
                 System.exit(1);
             }
 
-            boolean step6 = runStepFilterCollocations("s3n://dsp-ass2/Npmi_output/part-r-00000",
-                                                      "s3n://dsp-ass2/Filtered_output", args[1], args[2]);
+            boolean step6 = runStepSortCollocations("s3n://dsp-ass2/Filtered_output/part-r-00000",
+                                                    "s3n://dsp-ass2/Sorted_output");
             if (!step6) {
                 System.out.println("Step 6 failed");
-                System.exit(1);
-            }
-
-            boolean step7 = runStepSortCollocations("s3n://dsp-ass2/Filtered_output/part-r-00000",
-                                                    "s3n://dsp-ass2/Sorted_output");
-            if (!step7) {
-                System.out.println("Step 8 failed");
                 System.exit(1);
             }
 
