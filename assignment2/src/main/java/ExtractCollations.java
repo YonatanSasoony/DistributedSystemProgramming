@@ -82,7 +82,7 @@ public class ExtractCollations {
         // output: decade##w1w2 -> npmi (filter collocation)
         HadoopJarStepConfig hadoopJarStepFilterCollocations = new HadoopJarStepConfig()
                 .withJar("s3n://dsp-ass2/ExtractCollations.jar") // This should be a full map reduce application.
-                .withMainClass("StepFilterCollocations") //TODO; check args
+                .withMainClass("StepFilterCollocations")
                 .withArgs("s3n://dsp-ass2/Npmi_output/part-r-00000", "s3n://dsp-ass2/Filtered_output/", args[0], args[1]);
 
         // input: decade##w1w2 -> npmi (filter collocation)
