@@ -100,8 +100,8 @@ public class StepsRunner {
         return job.waitForCompletion(true);
     }
 
-    private static boolean runStepFilterCollocations(String input, String output,
-                                                     String minPmi, String relMinPmi) throws Exception {
+    private static boolean runStepFilterAndSortCollocations(String input, String output,
+                                                            String minPmi, String relMinPmi) throws Exception {
         System.out.println("Hello StepCalcFilter main");
 
         Configuration conf = new Configuration();
@@ -109,38 +109,13 @@ public class StepsRunner {
         conf.set("relMinPmi", relMinPmi);
 
         Job job = Job.getInstance(conf, "filter collocations");
-        job.setJarByClass(StepFilterCollocations.class);
+        job.setJarByClass(StepFilterAndSortCollocations.class);
         job.setInputFormatClass(LineToTextAndDoubleInputFormat.class);
-        job.setMapperClass(StepFilterCollocations.MapperClass.class);
-        job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(DoubleWritable.class);
-        job.setCombinerClass(StepFilterCollocations.CombinerClass.class);
-        job.setPartitionerClass(StepFilterCollocations.PartitionerClass.class);
-        job.setReducerClass(StepFilterCollocations.ReducerClass.class);
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(DoubleWritable.class);
-
-        FileInputFormat.addInputPath(job, new Path(input));
-        FileOutputFormat.setOutputPath(job, new Path(output));
-        return job.waitForCompletion(true);
-    }
-
-    private static boolean runStepSortCollocations(String input, String output) throws Exception {
-        System.out.println("Hello StepCalcSort main");
-
-        Configuration conf = new Configuration();
-
-        Job job = Job.getInstance(conf, "sort collocations");
-        job.setJarByClass(StepSortCollocationsDescending.class);
-        job.setInputFormatClass(LineToTextAndDoubleInputFormat.class);
-        job.setMapperClass(StepSortCollocationsDescending.MapperClass.class);
-//        job.setMapOutputKeyClass(Text.class); // for ascending sort
-//        job.setMapOutputValueClass(DoubleWritable.class);// for ascending sort
-        job.setMapOutputKeyClass(DoubleWritable.class); // for descending sort
-        job.setMapOutputValueClass(Text.class);// for descending sort
-//        job.setPartitionerClass(PartitionerClass.class); // no need
-        job.setReducerClass(StepSortCollocationsDescending.ReducerClass.class);
-        job.setNumReduceTasks(1);
+        job.setMapperClass(StepFilterAndSortCollocations.MapperClass.class);
+        job.setMapOutputKeyClass(DoubleWritable.class);
+        job.setMapOutputValueClass(Text.class);
+        job.setCombinerClass(StepFilterAndSortCollocations.CombinerClass.class);
+        job.setReducerClass(StepFilterAndSortCollocations.ReducerClass.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
 
@@ -182,17 +157,10 @@ public class StepsRunner {
                 System.exit(1);
             }
 
-            boolean step5 = runStepFilterCollocations("s3n://dsp-ass2/Npmi_output/part-r-00000",
-                                                      "s3n://dsp-ass2/Filtered_output", args[1], args[2]);
+            boolean step5 = runStepFilterAndSortCollocations("s3n://dsp-ass2/Npmi_output/part-r-00000",
+                                                             "s3n://dsp-ass2/Filtered_Sorted_output", args[1], args[2]);
             if (!step5) {
                 System.out.println("Step 5 failed");
-                System.exit(1);
-            }
-
-            boolean step6 = runStepSortCollocations("s3n://dsp-ass2/Filtered_output/part-r-00000",
-                                                    "s3n://dsp-ass2/Sorted_output");
-            if (!step6) {
-                System.out.println("Step 6 failed");
                 System.exit(1);
             }
 
