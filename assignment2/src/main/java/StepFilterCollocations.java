@@ -16,6 +16,7 @@ public class StepFilterCollocations {
     public static class MapperClass extends Mapper<Text, DoubleWritable, Text, DoubleWritable> {
 
         @Override
+        // <decade#bigram, npmi>
         public void map(Text decadeAndBigram, DoubleWritable npmi, Context context) throws IOException, InterruptedException {
             String decade = decadeAndBigram.toString().split(Defs.decadeBigramDelimiter)[0];
             context.write(new Text(decade), npmi);
@@ -36,16 +37,24 @@ public class StepFilterCollocations {
         }
     }
 
+    public static class PartitionerClass extends Partitioner<Text, LongWritable> {
+        @Override
+        // <decade, npmi1....npmiK> Or <decade##W1W2 , npmi>
+        public int getPartition(Text key, LongWritable value, int numPartitions) {
+            String decade = key.toString().split(Defs.decadeBigramDelimiter)[0];
+            return decade.hashCode() % numPartitions;
+        }
+    }
+
     public static class ReducerClass extends Reducer<Text,DoubleWritable,Text,DoubleWritable> {
         private static double decadeTotalNpmi;
 
         @Override
-        protected void setup(Context context) throws IOException, InterruptedException {
+        protected void setup(Context context) {
             decadeTotalNpmi = 0;
         }
 
-        //we did not implemented a Combiner class this time, because we cannot promise that the mapper or the combiner
-        //will receive all the relevant information/params for calculating the npmi
+
         @Override
         // <decade, npmi1....npmiK> Or <decade##W1W2 , npmi>
         public void reduce(Text key, Iterable<DoubleWritable> value, Context context) throws IOException,  InterruptedException {
@@ -61,31 +70,24 @@ public class StepFilterCollocations {
                 for(DoubleWritable val : value) {
                     npmi = val.get();
                 }
-                if(npmi >= minPmi && npmi / decadeTotalNpmi >= relMinPmi) {
+                if(npmi >= minPmi && npmi / decadeTotalNpmi >= relMinPmi) { //TODO: check average?  divide by N
                     context.write(key, new DoubleWritable(npmi));
                 }
             }
         }
     }
 
-    public static class PartitionerClass extends Partitioner<Text, LongWritable> {
-        @Override
-        public int getPartition(Text key, LongWritable value, int numPartitions) {
-            String decade = key.toString().split(Defs.decadeBigramDelimiter)[0];
-            return decade.hashCode() % numPartitions;
-        }
-    }
-
     public static void main(String[] args) throws Exception {
-        System.out.println("Hello StepCalcFilter main");
-        String input = args[0];
-        String output = args[1];
+        String jarName = args[0];
+        String input = args[1];
+        String output = args[2];
+        System.out.println("Hello "+jarName+" main");
 
         Configuration conf = new Configuration();
-        conf.set("minPmi", args[2]);
-        conf.set("relMinPmi", args[3]);
+        conf.set("minPmi", args[3]);
+        conf.set("relMinPmi", args[4]);
 
-        Job job = Job.getInstance(conf, "filter collocations");
+        Job job = Job.getInstance(conf, jarName);
         job.setJarByClass(StepFilterCollocations.class);
         job.setInputFormatClass(LineToTextAndDoubleInputFormat.class);
         job.setMapperClass(MapperClass.class);

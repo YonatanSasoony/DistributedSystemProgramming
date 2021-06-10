@@ -14,6 +14,7 @@ public class StepSortCollocationsDescending {
     public static class MapperClass extends Mapper<Text, DoubleWritable, DoubleWritable, Text> {
 
         @Override
+        // input - <decade#bigram, npmi>
         public void map(Text decadeAndBigram, DoubleWritable npmi, Context context) throws IOException, InterruptedException {
             String[] toks = decadeAndBigram.toString().split(Defs.decadeBigramDelimiter);
             String decade = toks[0];
@@ -24,12 +25,11 @@ public class StepSortCollocationsDescending {
         }
     }
 
-
     public static class ReducerClass extends Reducer<DoubleWritable,Text,Text,Text> {
         private static int prevDecade;
 
         @Override
-        protected void setup(Context context) throws IOException, InterruptedException {
+        protected void setup(Context context) {
             prevDecade = -1;
         }
 
@@ -41,7 +41,7 @@ public class StepSortCollocationsDescending {
             int decade =   ((int)positiveDecadeAndNpmi) / 1000;
             Double npmi = positiveDecadeAndNpmi - (decade * 1000);
 
-            if (decade !=prevDecade) { // split by decades and print titles
+            if (decade != prevDecade) { // split by decades and print titles
                 prevDecade = decade;
                 context.write(new Text(""), new Text(""));
                 context.write(new Text("Decade:"), new Text(decade+"0s"));
@@ -50,28 +50,20 @@ public class StepSortCollocationsDescending {
         }
     }
 
-    // We set the number of reducer tasks to 1, no need a partitioner.
-//    public static class PartitionerClass extends Partitioner<Text, LongWritable> {
-//        @Override
-//        public int getPartition(Text key, LongWritable value, int numPartitions) {
-//            return 0;
-//        }
-//    }
-
     public static void main(String[] args) throws Exception {
-        System.out.println("Hello StepCalcSort main");
+        String jarName = args[0];
         String input = args[0];
         String output = args[1];
+        System.out.println("Hello "+jarName+" main");
 
         Configuration conf = new Configuration();
 
-        Job job = Job.getInstance(conf, "sort collocations");
+        Job job = Job.getInstance(conf, jarName);
         job.setJarByClass(StepSortCollocationsDescending.class);
         job.setInputFormatClass(LineToTextAndDoubleInputFormat.class);
         job.setMapperClass(MapperClass.class);
-        job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(DoubleWritable.class);
-//        job.setPartitionerClass(PartitionerClass.class); // no need
+        job.setMapOutputKeyClass(DoubleWritable.class);
+        job.setMapOutputValueClass(Text.class);
         job.setReducerClass(ReducerClass.class);
         job.setNumReduceTasks(1);
         job.setOutputKeyClass(Text.class);

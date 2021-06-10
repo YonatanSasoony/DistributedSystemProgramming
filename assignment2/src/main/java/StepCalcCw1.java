@@ -2,7 +2,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapred.Task;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Partitioner;
@@ -22,8 +21,9 @@ public class StepCalcCw1 {
         }
 
         @Override
+        // input- <decade##bigram, occ> Or <decade<Ntag> , N>
         public void map(Text key, LongWritable occurrences, Context context) throws IOException, InterruptedException {
-            if (key.toString().contains(Defs.NTag)) { // <decade#N, N>
+            if (key.toString().contains(Defs.NTag)) { // <decade<Ntag>, N>
                 return;
             }
             Text decadeAndBigram = key;
@@ -49,6 +49,15 @@ public class StepCalcCw1 {
         }
     }
 
+    public static class PartitionerClass extends Partitioner<Text, LongWritable> {
+        @Override
+        // <decade##W1, occ1,...,occK> Or <decade##bigram , 0>
+        public int getPartition(Text key, LongWritable value, int numPartitions) {
+            String decadeAndW1 = key.toString().split(Defs.internalBigramDelimiter)[0];
+            return decadeAndW1.hashCode() % numPartitions;
+        }
+    }
+
     public static class ReducerClass extends Reducer<Text,LongWritable,Text,LongWritable> {
         private static long Cw1;
 
@@ -70,22 +79,15 @@ public class StepCalcCw1 {
         }
     }
 
-    public static class PartitionerClass extends Partitioner<Text, LongWritable> {
-        @Override
-        public int getPartition(Text key, LongWritable value, int numPartitions) {
-            String decadeAndW1 = key.toString().split(Defs.internalBigramDelimiter)[0];
-            return decadeAndW1.hashCode() % numPartitions;
-        }
-    }
-
     public static void main(String[] args) throws Exception {
-        System.out.println("Hello StepCalcCw1 main");
-        String input = args[0];
-        String output = args[1];
+        String jarName = args[0];
+        String input = args[1];
+        String output = args[2];
+        System.out.println("Hello "+jarName+" main");
 
         Configuration conf = new Configuration();
 
-        Job job = Job.getInstance(conf, "calc Cw1");
+        Job job = Job.getInstance(conf, jarName);
         job.setJarByClass(StepCalcCw1.class);
         job.setInputFormatClass(LineToTextAndLongInputFormat.class);
         job.setMapperClass(MapperClass.class);
