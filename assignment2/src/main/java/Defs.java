@@ -5,5 +5,6 @@ public class Defs {
     static final String internalBigramDelimiter = " ";
     static final String tagsDelimiter = "<@>";
     static final String sortDelimiter = "<:>";
+    static final String NTag = "<!>";
 
 }

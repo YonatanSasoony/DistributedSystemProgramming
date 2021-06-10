@@ -16,7 +16,7 @@ public class StepCalcCw2 {
         private static LongWritable zero;
 
         @Override
-        protected void setup(Context context) throws IOException, InterruptedException {
+        protected void setup(Context context) {
             zero = new LongWritable(0);
         }
 
@@ -55,7 +55,7 @@ public class StepCalcCw2 {
         private static long Cw2;
 
         @Override
-        protected void setup(Context context) throws IOException, InterruptedException {
+        protected void setup(Context context) {
             Cw2 = 0;
         }
 

@@ -34,7 +34,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>StepsRunner</mainClass>
+                            <mainClass>ExtractCollations</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

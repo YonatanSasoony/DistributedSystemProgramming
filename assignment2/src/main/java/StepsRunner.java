@@ -11,19 +11,19 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 public class StepsRunner {
 
 
-    private static boolean runStepCalcCw1w2(String input, String output) throws Exception {
-        System.out.println("Hello StepCalcCw1w2 main");
+    private static boolean runStepCalcCw1w2N(String input, String output) throws Exception {
+        System.out.println("Hello StepCalcCw1w2 N main");
 
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "calc Cw1w2");
-        job.setJarByClass(StepCalcCw1w2.class);
+        job.setJarByClass(StepCalcCw1w2N.class);
         job.setInputFormatClass(SequenceFileInputFormat.class);
-        job.setMapperClass(StepCalcCw1w2.MapperClass.class);
+        job.setMapperClass(StepCalcCw1w2N.MapperClass.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(LongWritable.class);
-        job.setPartitionerClass(StepCalcCw1w2.PartitionerClass.class);
-        job.setCombinerClass(StepCalcCw1w2.ReducerClass.class);
-        job.setReducerClass(StepCalcCw1w2.ReducerClass.class);
+        job.setPartitionerClass(StepCalcCw1w2N.PartitionerClass.class);
+        job.setCombinerClass(StepCalcCw1w2N.ReducerClass.class);
+        job.setReducerClass(StepCalcCw1w2N.ReducerClass.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(LongWritable.class);
 
@@ -152,12 +152,8 @@ public class StepsRunner {
     public static void main(String[] args) throws Exception {
         try {
             System.out.println("Hello StepsRunner main");
-
-            for (String arg : args) {
-                System.out.println("arg:" + arg);
-            }
-            boolean step1 = runStepCalcCw1w2("s3n://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/2gram/data",
-                                            "s3n://dsp-ass2/Cw1w2_output");
+            boolean step1 = runStepCalcCw1w2N("s3n://datasets.elasticmapreduce/ngrams/books/20090715/heb-all/2gram/data",
+                                              "s3n://dsp-ass2/Cw1w2_N_output");
             if (!step1) {
                 System.out.println("Step 1 failed");
                 System.exit(1);

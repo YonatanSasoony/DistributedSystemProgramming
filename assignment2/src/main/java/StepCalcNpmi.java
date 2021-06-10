@@ -46,7 +46,7 @@ public class StepCalcNpmi {
         private long N;
 
         @Override
-        protected void setup(Context context) throws IOException, InterruptedException {
+        protected void setup(Context context) {
             N = 0;
         }
 
