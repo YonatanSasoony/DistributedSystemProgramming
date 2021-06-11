@@ -52,8 +52,8 @@ public class StepSortCollocationsDescending {
 
     public static void main(String[] args) throws Exception {
         String jarName = args[0];
-        String input = args[0];
-        String output = args[1];
+        String input = args[1];
+        String output = args[2];
         System.out.println("Hello "+jarName+" main");
 
         Configuration conf = new Configuration();
