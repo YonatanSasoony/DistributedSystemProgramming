@@ -1,83 +1,74 @@
 # DistributedSystemProgramming
 
-## Submitted by Yonatan Sasoony 205916265 and Yossy Carmeli 204752406
+## Submitted by 
+Yonatan Sasoony 205916265 sasoony@post.bgu.ac.il
+Yossy Carmeli 204752406 yossy@post.bgu.ac.il
 
 ## How To Run Our Project?
-java -jar LocalApplication.jar inputFileName1... inputFileNameN outputFileName1... outputFileNameN n [terminate]
-- inputFileNameI is the name of the input file I.
-- outputFileName is the name of the output file.
-- n is the workers’ files ratio (reviews per worker).
-- terminate indicates that the application should terminate the manager at the end (optional).
+java -cp ExtractCollations.jar ExtractCollations <minPmi> <relMinPmi>
+- minPmi is the minimal pmi.
+- relMinPmi is the relative minimal pmi.
 
 ## How The Program Works?
+    
+A collocation is a sequence of words or terms that co-occur more often than would be expected by
+chance. The identification of collocations - such as 'crystal clear', 'cosmetic surgery', 'סביבה איכות - 'is
+essential for many natural language processing and information extraction application.
+    
+We were asked to code a map-reduce job for collocation extraction for each decade, and run it in the Amazon Elastic MapReduce service. 
+ The collocation criteria will be based on the normalized PMI value:
+  *  Minimal pmi: in case the normalized PMI is equal or greater than the given minimal PMI
+     value (denoted by minPmi), the given pair of two ordered words is considered to be a collocation.
+  * Relative minimal pmi: in case the normalized PMI value, divided by the sum of all
+    normalized pmi in the same decade (including those which their normalized PMI is less
+    than minPmi), is equal or greater than the given relative minimal PMI value (denoted by
+    relMinPmi), the given pair of two ordered words is considered to be a collocation.
 
-### Local Application
-The application resides on a local (non-cloud) machine. Once started, it reads the input file from the user, and:
-- Checks if a Manager node is active on the EC2 cloud. If it is not, the application will start the manager node.
-- Uploads the file to S3.
-- Sends a message to an SQS queue, stating the location of the file on S3
-- Checks an SQS queue for a message indicating the process is done and the response (the summary file) is available on S3.
-- Downloads the summary file from S3, and create an html file representing the results.
-- In case of terminate mode (as defined by the command-line argument), sends a termination message to the Manager.
+Our map-reduce job will get the minPmi and the relMinPmi values as parameters.
+We Calculated the normalized pmi of each pair of words in each decade, and display all collations above each of the two minimum inputs. 
+We Ran our experiments on the 2-grams Hebrew corpus. 
+The input of the program is the Hebrew 2-Gram dataset of Google Books Ngrams. 
+The output of the program is a list of the collocations for each decade, and there npmi value, ordered by their npmi (descending).
+    
+A Job Flow is a collection of processing steps that Amazon Elastic MapReduce runs on a specified dataset using a set of Amazon EC2 instances. 
+A Job Flow consists of one or more steps, each of which must complete in sequence successfully, for the Job Flow to finish.
+    
+A Job Flow Step is a user-defined unit of processing, mapping roughly to one algorithm that manipulates the data. 
+A step is a Hadoop MapReduce application implemented as a Java jar or a streaming program written in Java, Ruby, Perl, Python, PHP, R, or C++.
+For example, to count the frequency with which words appear in a document, and output them sorted by the count, the first step would be a MapReduce application which counts the occurrences of each word, and the second step would be a MapReduce application which sorts the output from the first step based on the calculated frequenciess.
 
-### The Manager
-The manager process resides on an EC2 node. It checks a special SQS queue for messages from local applications. Once it receives a message it:
-- **In the case of new task message**:
-- Download the input file from S3.
-- Distribute the operations to be performed on the reviews to the workers using SQS queue/s.
-- Check the SQS message count and starts Worker processes (nodes) accordingly.
-    - The manager should create a worker for every n messages (as defined by the command-line argument), if there are no running workers.
-    - If there are k active workers, and the new job requires m workers, then the manager should create m-k new workers, if possible.
-    - Note that while the manager creates a node for every n messages, it does not delegate messages to specific nodes. All of the worker nodes take their messages from the same SQS queue; so it might be the case that with 2n messages, hence two worker nodes, one node processed n+(n/2) messages, while the other processed only n/2.
+### The Steps:
+    1. CalcCw1w2N: calculates N for each decade and C(w1w2) for each bigram per decade.
+    2. CalcCw1: calculates C(w1) for each bigram per decade.
+    3. CalcCw2: calculates C(w2) for each bigram per decade.
+    4. CalcNpmi: calculates npmi value for each bigram per decade.
+    5. Filter: filters only bigrams that found as collocations, per decade.
+    6. Sort: sorts the filtered bigrams per decade and displays their npmi value, descending.
+    
+    
+### Reports:
+* For each decade, the top-10 collocations and there npmi value, ordered by npmi (descending):
+    - attached a file, top10.txt
+* The number of key-value pairs that were sent from the mappers to the reducers in your map-reduce runs, and their size with and without local aggregation:
+    1. with local aggregation:
+       * Total map output records: 415,796,445
+       * Total map output bytes: 12,564,425,267
+    2. without local aggregation:
+        * Total Map output records:  486,043,711
+        * Total Map output bytes:  12,564,425,267
+    
+* A list of 5 good collocations and a list of 5 bad collocations, you manually collected from the system output. In the frontal checking you will be asked to say something on why wrong collocations were extracted (a manual analysis).
+    Good collocations:
+    * 2000s: כקליפת השום 
+    * 1540s: אותות ומופתים 
+    * 1800s: נושאי כליו 
+    * 2000s: טיפין טיפין 
+    * 1750s: הפלא ופלא 
+    
+    Bad Collocations:
+    * 1530s: ועכשיו אתה 
+    * 1530s: אתמול אמרת 
+    * 1700s: הנך רואה 
+    * 1780s: יעברו אליך 
+    * 1980s: לרדיו ולטלוויזיה 
 
-- **In case the manger receives response messages from the workers (regarding input file), it:**
-- Creates a summary output file accordingly,
-- Uploads the output file to S3,
-- Sends a message to the application with the location of the file.
-- **In case of a termination message, the manager:**
-- Should not accept any more input files from local applications. However, it does serve the local application that sent the termination message.
-- Waits for all the workers to finish their job, and then terminates them.
-- Creates response messages for the jobs, if needed.
-- Terminates.
-
-### The Workers
-A worker process resides on an EC2 node. His life cycle:
-Repeatedly:
-- Get a message from an SQS queue.
-- Perform the requested job, and return the result.
-- Remove the processed message from the SQS queue.
-
-### The Flow
-1. The LocalApplication uploads the input files to S3 and sends a SQS message to the Manager indicating the information for downloading the uploaded files.
-2. The Manager downloads the files from S3, and distributes sentiment analysis and entity extraction tasks to the Workers using SQS.
-3. The Worker performs the sentiment analysis and entity extraction tasks, and sends the output back to the Manager using SQS.
-4. The Manager collects all the outputs from the Workers and create a summary for each input file, uploads the content of the summary to S3 and sends a SQS message back to the LocalApplication indicating the information for downloading the uploaded content.
-5. The LocalApplication downloads the summary from S3, and creates an HTML file. If the LocalApplication got terminate as an argument it sends terminate message to the Manager.
-
-### More Detailed Flow
-1. Local Application uploads the file with the list of reviews urls to S3.
-2. Local Application sends a message (queue) stating the location of the input file on S3.
-3. Local Application checks if a manager is active and if not, starts it.
-4. Manager downloads a list of reviews.
-5. Manager distributes sentiment analysis and entity extraction jobs on the workers.
-6. Manager bootstraps nodes to process messages.
-7. Worker gets a message from a SQS queue.
-8. Worker performs the requested job/s on the review.
-9. Worker puts a message in a SQS queue indicating the original reviewtogether with the output of the operation performed (sentiment/extracted entities).
-10. Manager reads all Workers' messages from SQS and creates one summary file.
-11. Manager uploads the summary file to S3.
-12. Manager posts a SQS message about the summary file.
-13. Local Application reads SQS message.
-14. Local Application downloads the summary file from S3.
-15. Local Application creates html output file.
-16. Local application send a terminate message to the manager if it received <i>terminate</i> as one of its arguments.
-
-Example:
-<img src="https://user-images.githubusercontent.com/62992694/115233931-2ca5fb00-a121-11eb-9fe8-97913a2deec3.jpeg" width="800" height="450" />
-
-### What type of instance did we used?
-- ami-0a92c388d914cf40c
-- types: T2.MICRO for the Manager and T2.MEDIUM for the Workers.
-
-### How much time it took your program to finish working on the input files, and what was the n you used?
-- About 10 minuts, 5 input files and n=49
