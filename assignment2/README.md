@@ -5,7 +5,7 @@ Yonatan Sasoony 205916265 sasoony@post.bgu.ac.il
 Yossy Carmeli 204752406 yossy@post.bgu.ac.il
 
 ## How To Run Our Project?
-java -cp ExtractCollations.jar ExtractCollations <minPmi> <relMinPmi>
+java -cp ExtractCollations.jar ExtractCollations minPmi relMinPmi
 - minPmi is the minimal pmi.
 - relMinPmi is the relative minimal pmi.
 
