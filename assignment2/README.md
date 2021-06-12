@@ -1,7 +1,7 @@
 # DistributedSystemProgramming
 
 ## Submitted by 
-Yonatan Sasoony 205916265 sasoony@post.bgu.ac.il
+Yonatan Sasoony 205916265 sasoony@post.bgu.ac.il  
 Yossy Carmeli 204752406 yossy@post.bgu.ac.il
 
 ## How To Run Our Project?
@@ -34,11 +34,10 @@ A Job Flow is a collection of processing steps that Amazon Elastic MapReduce run
 A Job Flow consists of one or more steps, each of which must complete in sequence successfully, for the Job Flow to finish.
     
 A Job Flow Step is a user-defined unit of processing, mapping roughly to one algorithm that manipulates the data. 
-A step is a Hadoop MapReduce application implemented as a Java jar or a streaming program written in Java, Ruby, Perl, Python, PHP, R, or C++.
-For example, to count the frequency with which words appear in a document, and output them sorted by the count, the first step would be a MapReduce application which counts the occurrences of each word, and the second step would be a MapReduce application which sorts the output from the first step based on the calculated frequenciess.
+A step is a Hadoop MapReduce application implemented as a Java jar or a streaming program written in Java, Ruby, Perl, Python, PHP, R, or C++.  
 
 ### The Steps:
-    1. CalcCw1w2N: calculates N for each decade and C(w1w2) for each bigram per decade.
+    1. CalcCw1w2N: calculates N for each decade and C(w1w2) for each bigram per decade, and filters bigrams using a stop-words list.
     2. CalcCw1: calculates C(w1) for each bigram per decade.
     3. CalcCw2: calculates C(w2) for each bigram per decade.
     4. CalcNpmi: calculates npmi value for each bigram per decade.
