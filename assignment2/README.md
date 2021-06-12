@@ -56,7 +56,7 @@ A step is a Hadoop MapReduce application implemented as a Java jar or a streamin
         * Total Map output records:  486,043,711
         * Total Map output bytes:  12,564,425,267
     
-* A list of 5 good collocations and a list of 5 bad collocations, you manually collected from the system output. In the frontal checking you will be asked to say something on why wrong collocations were extracted (a manual analysis).
+* A list of 5 good collocations and a list of 5 bad collocations, you manually collected from the system output. In the frontal checking you will be asked to say something on why wrong collocations were extracted (a manual analysis).  
     Good collocations:
     * 2000s: כקליפת השום 
     * 1540s: אותות ומופתים 
