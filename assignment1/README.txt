@@ -28,7 +28,9 @@ The manager process resides on an EC2 node. It checks a special SQS queue for me
 - Check the SQS message count and starts Worker processes (nodes) accordingly.
     - The manager should create a worker for every n messages (as defined by the command-line argument), if there are no running workers.
     - If there are k active workers, and the new job requires m workers, then the manager should create m-k new workers, if possible.
-    - Note that while the manager creates a node for every n messages, it does not delegate messages to specific nodes. All of the worker nodes take their messages from the same SQS queue; so it might be the case that with 2n messages, hence two worker nodes, one node processed n+(n/2) messages, while the other processed only n/2.
+    - Note that while the manager creates a node for every n messages, it does not delegate messages to specific nodes. All of the worker nodes take their 
+	messages from the same SQS queue; so it might be the case that with 2n messages, hence two worker nodes, one node processed n+(n/2) messages, 
+	while the other processed only n/2.
 
 - **In case the manger receives response messages from the workers (regarding input file), it:**
 - Creates a summary output file accordingly,
@@ -51,8 +53,10 @@ Repeatedly:
 1. The LocalApplication uploads the input files to S3 and sends a SQS message to the Manager indicating the information for downloading the uploaded files.
 2. The Manager downloads the files from S3, and distributes sentiment analysis and entity extraction tasks to the Workers using SQS.
 3. The Worker performs the sentiment analysis and entity extraction tasks, and sends the output back to the Manager using SQS.
-4. The Manager collects all the outputs from the Workers and create a summary for each input file, uploads the content of the summary to S3 and sends a SQS message back to the LocalApplication indicating the information for downloading the uploaded content.
-5. The LocalApplication downloads the summary from S3, and creates an HTML file. If the LocalApplication got terminate as an argument it sends terminate message to the Manager.
+4. The Manager collects all the outputs from the Workers and create a summary for each input file, uploads the content of the summary to S3 and sends a SQS message 
+back to the LocalApplication indicating the information for downloading the uploaded content.
+5. The LocalApplication downloads the summary from S3, and creates an HTML file. If the LocalApplication got terminate as an argument it sends terminate message to the
+ Manager.
 
 ### More Detailed Flow
 1. Local Application uploads the file with the list of reviews urls to S3.
@@ -78,4 +82,40 @@ Repeatedly:
 - types: T2.MICRO for the Manager and T2.MEDIUM for the Workers.
 
 ### How much time it took your program to finish working on the input files, and what was the n you used?
-- About 3 minuts, 5 input files and n=5
+- About 10 minuts, 5 input files and n=49
+
+▪ Did you think for more than 2 minutes about security? Do not send your credentials in plain text!
+- Yes. We didn't send our credentials at all. We used roles and security groups in order to pass the AWS permissions to the EC2 instances.
+
+▪ Did you think about scalability? Will your program work properly when 1 million clients connected at the same time? How about 2 million? 1 billion? Scalability is very important aspect of the system, be sure it is scalable!
+- Yes. In order to support large amount of clients we've created a SQS queue for every local application and input file combination.
+
+▪ What about persistence? What if a node dies? What if a node stalls for a while? Have you taken care of all possible outcomes in the system? Think of more possible issues that might arise from failures. What did you do to solve it? What about broken communications? Be sure to handle all fail-cases!
+- The worker deletes his message only after successfully complete analyzing and sends his response for the message. In a case a worker dies/fails, the message wont be deleted and after his message's visibility time will ran out, another worker will receive it.
+   Besides that, the manager checks if there are any meesing workers, and if so, initiates the necessary amount.
+
+▪ Threads in your application, when is it a good idea? When is it bad? Invest time to think about threads in your application!
+- Using threads is a good idea in parts where our program has to perform many independent tasks. On the other hand, when we perform busy-wait for massages we did not use threads.
+We used threads in our application twice:
+1. Manager- when a manager recieves a message to perform, it initiates a thread that in charge of distributing the tasks for the workers, waits for all the task to be completed and then it creates, uploads the summary file and sends the location to the SQS queue for the local application.
+2. LocalApplication - when the local application receives the location of the summary file from the manager, it initiates a thread to download the summary file, process it and creates the HTML file.
+
+▪ Did you run more than one client at the same time? Be sure they work properly, and finish properly, and your results are correct.
+- Yes. We ran 3 local applications at the same time, each with different inputs. All the outputs created properly and everything has been done simultaneously.
+
+▪ Do you understand how the system works? Do a full run using pen and paper, draw the different parts and the communication that happens between them.
+- Yes. We understand the flow and how to system works. As described above.
+
+▪ Did you manage the termination process? Be sure all is closed once requested!
+- Yes. once the manager receives the termination message, it won't deal with new tasks. it waits for all the other tasks to be completed. Once everything has completed (i.e summary files has been uploaded and sent), it shuts down the workers and itself.
+
+▪ Are all your workers working hard? Or some are slacking? Why?
+- Each worker runs infinitly and waits for messages and handles them. 
+Because we are not delegating specific users per task, there can be a situation that some workers will do more tasks than others.
+
+▪ Is your manager doing more work than he's supposed to? Have you made sure each part of your system has properly defined tasks? Did you mix their tasks? Don't!
+- The manger, as well as the other applications, does only what he's supposed to do, as described above.
+
+▪ Lastly, are you sure you understand what distributed means? Is there anything in your system awaiting another?
+- Yes, a distributed system is a system with multiple components located on different machines that communicate and coordinate actions in order to appear as a single system to the end-user.
+Yes, The manager waits for the local application to upload files to S3. The manager waits for the workers to analize the data. And the local application waits for the manager until it will make the summary file.
